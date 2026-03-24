@@ -6,7 +6,7 @@
 
 Meta-analysis pools endpoint-level results from multiple randomized controlled trials (RCTs) to produce synthesized evidence. However, each RCT collects a different number of variables (baseline characteristics, laboratory values, comorbidities), meaning the endpoint may represent vastly different proportions of the total information space across studies. We propose the **Information Contribution Ratio (ICR)** -- the proportion of total data information attributable to the endpoint -- as a diagnostic measure for meta-analysis validity. We define two ICR variants: ICR_std (standardized, d/D) based on dimensionality, and ICR_raw based on variance proportions. Through Monte Carlo simulation (100 iterations x 3 scenarios) and analysis of real-world RCT meta-analyses (statin therapy, intensive glucose control), we demonstrate that: (1) studies with uniform ICR produce homogeneous meta-analyses (I-squared = 11.0%), while studies with heterogeneous ICR show increased heterogeneity (I-squared = 11.7%); (2) in sequential meta-analysis, adding studies with divergent ICR can increase heterogeneity; (3) real-world meta-analyses where heterogeneity emerged over time (e.g., glucose control trials) show greater ICR discrepancy (ICRD = 0.048) than stable meta-analyses (statin trials, ICRD = 0.009). These findings suggest that ICR discrepancy should be reported alongside standard heterogeneity measures to improve transparency in evidence synthesis.
 
-**Keywords**: meta-analysis, heterogeneity, information contribution ratio, randomized controlled trial, evidence synthesis, data dimensionality
+**Keywords**: meta-analysis, heterogeneity, information contribution ratio, randomized controlled trial, evidence synthesis, data dimensionality, principal component analysis, individual patient data
 
 ---
 
@@ -108,7 +108,19 @@ For each simulated or real-world dataset, we performed:
 2. **Sequential (cumulative) meta-analysis** adding studies one by one to track the evolution of I-squared over time.
 3. **ICR-weighted meta-analysis** (novel) where study weights incorporate ICR as a quality adjustment factor.
 
-### 2.4 Real-World Data Analysis
+### 2.4 PCA-Based ICR Validation (Individual Patient Data)
+
+To validate the PCA-based ICR approach, we used the International Stroke Trial (IST) dataset, a publicly available individual patient data (IPD) resource comprising 19,435 patients across 36 countries (International Stroke Trial Collaborative Group, 1997; Sandercock et al., 2011). The IST is one of the largest open-access RCT datasets with sufficient variable richness for PCA analysis.
+
+**Data Preparation**: We encoded 25 analysis variables from the IST dataset: 3 continuous (delay to randomisation, age, systolic blood pressure), 8 binary-encoded (sex, sleep onset, atrial fibrillation, CT scan, visible infarct, prior heparin, prior aspirin, consciousness level), 8 neurological deficit indicators, 4 stroke subtype dummies, and 1 binary endpoint (14-day mortality, DIED). Categorical variables were encoded as numeric (binary or ordinal) for PCA.
+
+**Country Sub-Study Design**: We treated the 8 largest country cohorts (UK, Italy, Switzerland, Poland, Netherlands, Sweden, Australia, Argentina; n = 545-5,787) as independent "sub-studies" within the same trial. This design holds the variable set constant (D = 25) while allowing the covariance structure to vary naturally across populations, isolating the effect of data structure on ICR.
+
+**ICR_pca Methods**: For each country sub-study, we computed:
+1. *ICR_pca (loading-based)*: Identified PCs where the endpoint variable (DIED) had an absolute loading >= 0.3, then summed their explained variance ratios.
+2. *ICR_pca (regression-based)*: Performed PCA on predictor variables only (D-1 = 24), regressed the endpoint on all PC scores, and computed ICR_pca_reg = SUM(beta_k^2 * lambda_k) / (SUM(lambda_k) + Var(Y)).
+
+### 2.5 Real-World Data Analysis
 
 We selected two well-known meta-analysis domains where heterogeneity is known to have evolved over time:
 
@@ -172,16 +184,45 @@ The statin trials had nearly identical ICR_std values (0.091-0.100), reflecting 
 
 The glucose control trials had more variable ICR_std values (0.077-0.125), driven by different numbers of measured variables. UKPDS, with the highest ICR (fewest variables, D = 8), showed the most favorable outcome. ACCORD, with the lowest ICR (most variables, D = 13), showed harm. The meta-analysis exhibited meaningful heterogeneity (I-squared = 17.0%) and a pooled effect indistinguishable from zero.
 
-### 3.3 Comparison of ICR Patterns
+### 3.3 PCA-Based ICR Validation (IST Individual Patient Data)
 
-The two real-world examples illustrate the ICR framework:
+The IST PCA analysis revealed substantial variation in endpoint information contribution across country sub-studies, even though all sub-studies used the same 25 variables.
 
-| Meta-Analysis | ICRD | ICR CV | I-squared | Pooled Effect |
-|--------------|------|--------|-----------|---------------|
-| Statin therapy | 0.009 | 0.041 | 0.0% | -0.251 (significant) |
-| Glucose control | 0.048 | 0.240 | 17.0% | -0.003 (non-significant) |
+#### ICR_pca Results by Country
 
-The meta-analysis with lower ICRD (statin) showed lower heterogeneity and a clear treatment effect. The meta-analysis with higher ICRD (glucose control) showed greater heterogeneity and an inconclusive pooled estimate. While this is a descriptive comparison (not causal evidence), the pattern is consistent with our hypothesis.
+| Country | n | Mortality | ICR_std | ICR_pca (loading) | ICR_pca (regression) | Endpoint PCs |
+|---------|------|-----------|---------|-------------------|---------------------|-------------|
+| UK | 5,787 | 28.6% | 0.040 | 0.138 | 0.00162 | 4 |
+| Italy | 3,112 | 20.0% | 0.040 | 0.046 | 0.00153 | 2 |
+| Switzerland | 1,631 | 23.1% | 0.040 | 0.121 | 0.00135 | 4 |
+| Poland | 759 | 29.6% | 0.040 | 0.139 | 0.00230 | 4 |
+| Netherlands | 728 | 18.3% | 0.040 | 0.180 | 0.00136 | 5 |
+| Sweden | 636 | 12.7% | 0.040 | 0.096 | 0.00073 | 3 |
+| Australia | 568 | 15.0% | 0.040 | 0.109 | 0.00096 | 4 |
+| Argentina | 545 | 21.8% | 0.040 | 0.079 | 0.00157 | 3 |
+
+**Key findings**:
+
+1. **ICR_pca varied substantially across countries**: The loading-based ICR_pca ranged from 0.046 (Italy) to 0.180 (Netherlands), with a coefficient of variation of 0.36. This 4-fold range contrasts with the constant ICR_std = 0.040 for all sub-studies.
+
+2. **ICR_pca exceeds ICR_std**: In all 8 countries, ICR_pca (loading-based) exceeded ICR_std, indicating that the endpoint variable participates in more principal components than its 1/D share would suggest. The endpoint's involvement in 2-5 PCs (vs. the expected ~1 PC) reflects its correlation with other clinical variables.
+
+3. **Strong correlation between ICR_pca_reg and mortality**: The regression-based ICR_pca correlated strongly with 14-day mortality rates (r = 0.90, p < 0.01). Countries where the endpoint variable captured a larger share of the total predictive information (higher ICR_pca_reg) had higher mortality rates. This suggests that ICR_pca reflects genuine differences in the endpoint's informational weight across populations.
+
+4. **Loading-based vs regression-based**: The two PCA methods captured different aspects of endpoint information. The loading-based method (CV = 0.36) showed greater variation than the regression-based method (CV = 0.33), but the regression method produced a much stronger correlation with the outcome.
+
+### 3.4 Comparison of ICR Patterns
+
+The three analyses (simulation, real-world Table 1, and IST PCA) provide converging evidence:
+
+| Analysis | ICR Measure | Variation (CV) | Association with Outcome |
+|----------|------------|----------------|-------------------------|
+| Statin therapy | ICR_std | 0.041 | I-squared = 0.0% (stable) |
+| Glucose control | ICR_std | 0.240 | I-squared = 17.0% (heterogeneous) |
+| IST (loading) | ICR_pca | 0.360 | r = 0.27 with mortality |
+| IST (regression) | ICR_pca_reg | 0.329 | r = 0.90 with mortality |
+
+The meta-analysis with lower ICRD (statin) showed lower heterogeneity and a clear treatment effect. The meta-analysis with higher ICRD (glucose control) showed greater heterogeneity and an inconclusive pooled estimate. The IST PCA analysis demonstrates that even within a single trial, the endpoint's informational weight varies meaningfully across populations, validating the ICR concept at the individual patient data level.
 
 ---
 
@@ -221,11 +262,11 @@ This does not necessarily invalidate meta-analysis, but it suggests that ICR dis
 
 4. **ICR_raw near zero for binary endpoints**: When the endpoint is a binary variable with low event rate (e.g., mortality at 5-10%), its raw variance (p(1-p)) is very small compared to continuous variables, causing ICR_raw to approach zero. ICR_std avoids this issue by treating all variables equally after standardization.
 
-5. **No individual patient data analysis**: We were unable to identify publicly available IPD datasets from all studies within a single meta-analysis. The PCA-based ICR approach (ICR_pca) remains theoretical and should be validated when suitable IPD become available.
+5. **Single-trial IPD validation**: While we validated ICR_pca using the IST dataset, this represents a single multi-national trial rather than multiple independent trials from a meta-analysis. Country sub-studies share the same protocol and variable definitions, which may understate the ICR variation that would be observed across truly independent trials.
 
 ### 4.5 Future Directions
 
-1. **IPD-based validation**: Individual patient data meta-analyses (IPD-MA) that have open-access datasets would allow computation of ICR_pca and comparison with ICR_std.
+1. **Multi-trial IPD validation**: Individual patient data meta-analyses (IPD-MA) with open-access data from multiple independent trials would provide the strongest test of the ICR framework, allowing comparison of ICR_pca across studies with genuinely different variable sets and data collection protocols.
 
 2. **Larger-scale empirical study**: Systematically computing ICR for all studies in a large collection of Cochrane reviews to test whether ICRD predicts heterogeneity across a wide range of meta-analyses.
 
@@ -237,7 +278,7 @@ This does not necessarily invalidate meta-analysis, but it suggests that ICR dis
 
 ## 5. Conclusion
 
-We have introduced the Information Contribution Ratio (ICR) as a novel diagnostic measure for assessing meta-analysis validity. The ICR quantifies how much of a study's total information is captured by its endpoint, providing a new perspective on why some meta-analyses show unexpected heterogeneity. Our simulation study demonstrates the theoretical mechanism by which ICR discrepancy can affect meta-analysis results, and our real-world analysis shows that established meta-analyses with known heterogeneity patterns are consistent with ICR-based predictions. We recommend that ICR discrepancy be reported as a supplementary diagnostic in meta-analyses to improve the transparency and interpretability of evidence synthesis.
+We have introduced the Information Contribution Ratio (ICR) as a novel diagnostic measure for assessing meta-analysis validity. The ICR quantifies how much of a study's total information is captured by its endpoint, providing a new perspective on why some meta-analyses show unexpected heterogeneity. Our simulation study demonstrates the theoretical mechanism by which ICR discrepancy can affect meta-analysis results, our real-world analysis shows that established meta-analyses with known heterogeneity patterns are consistent with ICR-based predictions, and our PCA-based validation using IST individual patient data confirms that ICR_pca captures meaningful variation in endpoint information contribution across sub-studies (r = 0.90 between ICR_pca_reg and mortality rates). We recommend that ICR discrepancy be reported as a supplementary diagnostic in meta-analyses to improve the transparency and interpretability of evidence synthesis.
 
 ---
 
@@ -254,6 +295,8 @@ We have introduced the Information Contribution Ratio (ICR) as a novel diagnosti
 9. Action to Control Cardiovascular Risk in Diabetes Study Group. Effects of intensive glucose lowering in type 2 diabetes (ACCORD). *NEJM*. 2008;358:2545-2559.
 10. ADVANCE Collaborative Group. Intensive blood glucose control and vascular outcomes in patients with type 2 diabetes (ADVANCE). *NEJM*. 2008;358:2560-2572.
 11. Duckworth W, et al. Glucose control and vascular complications in veterans with type 2 diabetes (VADT). *NEJM*. 2009;360:129-139.
+12. International Stroke Trial Collaborative Group. The International Stroke Trial (IST): a randomised trial of aspirin, subcutaneous heparin, both, or neither among 19435 patients with acute ischaemic stroke. *Lancet*. 1997;349:1569-1581.
+13. Sandercock PAG, et al. The International Stroke Trial database. *Trials*. 2011;12:101.
 
 ---
 
@@ -276,6 +319,7 @@ Source code is available at: https://github.com/bougtoir/wip/tree/devin/17743533
 | `meta_analysis.py` | DerSimonian-Laird and ICR-weighted meta-analysis |
 | `simulation.py` | Synthetic RCT data generation and Monte Carlo simulation |
 | `real_world_analysis.py` | Real-world dataset analysis |
+| `ist_pca_analysis.py` | IST PCA-based ICR validation with individual patient data |
 | `visualization.py` | Publication-quality figure generation |
 
 ## Appendix B: Supplementary Figures
@@ -286,3 +330,4 @@ Figures are saved in the `figures/` directory:
 - `fig2_sequential_analysis.png`: Sequential meta-analysis (Scenario C)
 - `fig_realworld_statin.png`: Statin therapy ICR analysis
 - `fig_realworld_glucose_control.png`: Glucose control ICR analysis
+- `fig_pca_ist_analysis.png`: PCA-based ICR analysis using IST individual patient data
