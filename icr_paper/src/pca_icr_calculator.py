@@ -197,7 +197,7 @@ def compare_icr_methods(
     icr_v_result = compute_icr_v_from_dataframe(df, endpoint_cols, group_col)
     results.append({
         "method": "ICR_v (variance-based)",
-        "icr_value": icr_v_result["icr_v_all"],
+        "icr_value": icr_v_result["icr_raw"],
         "n_variables": icr_v_result["n_variables_used"],
     })
 
