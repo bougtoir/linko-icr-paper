@@ -112,23 +112,48 @@ def add_image_slide(prs, fig_filename, title_text, caption_text=""):
     return slide
 
 
-def _add_shape_box(slide, left, top, width, height, text, fill_rgb, font_size=12, bold=False, align=PP_ALIGN.CENTER):
-    """Helper to add a rounded rectangle with text."""
+def _add_shape_box(slide, left, top, width, height, text, fill_rgb,
+                   font_size=12, bold=False, align=PP_ALIGN.CENTER,
+                   font_color=None, line_rgb=None):
+    """Helper to add a rounded rectangle with text.
+
+    Uses explicit run-level formatting so that multi-line text (\\n)
+    renders correctly in PowerPoint.  ``font_color`` sets the text
+    colour directly, avoiding the fragile post-creation override
+    pattern that caused z-order / visibility bugs.
+    """
     shape = slide.shapes.add_shape(
         MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height
     )
     shape.fill.solid()
     shape.fill.fore_color.rgb = fill_rgb
-    shape.line.color.rgb = RGBColor(0x33, 0x33, 0x33)
-    shape.line.width = Pt(1)
+    if line_rgb is not None:
+        shape.line.color.rgb = line_rgb
+        shape.line.width = Pt(1)
+    else:
+        shape.line.fill.background()          # no border by default
+
     tf = shape.text_frame
     tf.word_wrap = True
-    tf.paragraphs[0].alignment = align
-    tf.paragraphs[0].text = text
-    tf.paragraphs[0].font.size = Pt(font_size)
-    tf.paragraphs[0].font.bold = bold
-    tf.paragraphs[0].font.name = "Calibri"
     tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+
+    # Split on newlines and create one paragraph per line so that
+    # each paragraph gets its own explicit run-level formatting.
+    lines = text.split("\n")
+    for idx, line in enumerate(lines):
+        if idx == 0:
+            para = tf.paragraphs[0]
+        else:
+            para = tf.add_paragraph()
+        para.alignment = align
+        run = para.add_run()
+        run.text = line
+        run.font.size = Pt(font_size)
+        run.font.bold = bold
+        run.font.name = "Calibri"
+        if font_color is not None:
+            run.font.color.rgb = font_color
+
     return shape
 
 
@@ -166,19 +191,20 @@ def add_linko_framework_slide(prs, lang="en"):
     p.font.name = "Calibri"
     p.alignment = PP_ALIGN.CENTER
 
+    WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+    BLACK = RGBColor(0x33, 0x33, 0x33)
+
     # Top: LINKO title box
     linko_title = "LINKO\n(Latent Information Normalization\nfor Key Outcomes)" if lang == "en" else "LINKO\n(Latent Information Normalization\nfor Key Outcomes)\n\u4e3b\u8981\u30a2\u30a6\u30c8\u30ab\u30e0\u306e\u305f\u3081\u306e\u6f5c\u5728\u60c5\u5831\u6b63\u898f\u5316"
     _add_shape_box(slide, Inches(4.0), Inches(0.9), Inches(5.3), Inches(1.2),
-                   linko_title, RGBColor(0x2C, 0x3E, 0x50), font_size=14, bold=True)
-    # Make text white
-    shape = slide.shapes[-1]
-    for par in shape.text_frame.paragraphs:
-        par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                   linko_title, RGBColor(0x2C, 0x3E, 0x50), font_size=14, bold=True,
+                   font_color=WHITE, line_rgb=BLACK)
 
     # Core concept
     core_text = "Core Question: Does the endpoint carry the same\ninformational weight in every study?" if lang == "en" else "\u6838\u5fc3\u7684\u554f\u3044: \u30a8\u30f3\u30c9\u30dd\u30a4\u30f3\u30c8\u306f\u3059\u3079\u3066\u306e\n\u7814\u7a76\u3067\u540c\u3058\u60c5\u5831\u7684\u91cd\u307f\u3092\u6301\u3064\u304b\uff1f"
     _add_shape_box(slide, Inches(3.2), Inches(2.4), Inches(6.9), Inches(0.9),
-                   core_text, RGBColor(0xEB, 0xF5, 0xFB), font_size=13)
+                   core_text, RGBColor(0xEB, 0xF5, 0xFB), font_size=13,
+                   font_color=BLACK, line_rgb=BLACK)
 
     # Arrow down from core to two approaches
     _add_arrow(slide, Inches(5.0), Inches(3.3), Inches(3.5), Inches(3.8))
@@ -187,26 +213,24 @@ def add_linko_framework_slide(prs, lang="en"):
     # Left branch: Approach 1
     a1_title = "Approach 1: Variance-based ICR" if lang == "en" else "\u30a2\u30d7\u30ed\u30fc\u30c11: \u5206\u6563\u30d9\u30fc\u30b9ICR"
     _add_shape_box(slide, Inches(1.0), Inches(3.9), Inches(4.8), Inches(0.7),
-                   a1_title, RGBColor(0x34, 0x98, 0xDB), font_size=13, bold=True)
-    shape = slide.shapes[-1]
-    for par in shape.text_frame.paragraphs:
-        par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                   a1_title, RGBColor(0x34, 0x98, 0xDB), font_size=13, bold=True,
+                   font_color=WHITE, line_rgb=BLACK)
 
     a1_detail = "ICR_std = d / D\nComputable from published Table 1" if lang == "en" else "ICR_std = d / D\nTable 1\u304b\u3089\u8a08\u7b97\u53ef\u80fd"
     _add_shape_box(slide, Inches(1.0), Inches(4.8), Inches(4.8), Inches(0.7),
-                   a1_detail, RGBColor(0xD6, 0xEA, 0xF8), font_size=11)
+                   a1_detail, RGBColor(0xD6, 0xEA, 0xF8), font_size=11,
+                   font_color=BLACK, line_rgb=BLACK)
 
     # Right branch: Approach 2
     a2_title = "Approach 2: PCA-based ICR" if lang == "en" else "\u30a2\u30d7\u30ed\u30fc\u30c12: PCA\u30d9\u30fc\u30b9ICR"
     _add_shape_box(slide, Inches(7.5), Inches(3.9), Inches(4.8), Inches(0.7),
-                   a2_title, RGBColor(0xE7, 0x4C, 0x3C), font_size=13, bold=True)
-    shape = slide.shapes[-1]
-    for par in shape.text_frame.paragraphs:
-        par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                   a2_title, RGBColor(0xE7, 0x4C, 0x3C), font_size=13, bold=True,
+                   font_color=WHITE, line_rgb=BLACK)
 
     a2_detail = "Loading-based + Regression-based\nRequires individual patient data (IPD)" if lang == "en" else "Loading\u6cd5 + \u56de\u5e30\u6cd5\n\u500b\u7968\u30c7\u30fc\u30bf(IPD)\u304c\u5fc5\u8981"
     _add_shape_box(slide, Inches(7.5), Inches(4.8), Inches(4.8), Inches(0.7),
-                   a2_detail, RGBColor(0xFA, 0xDB, 0xD8), font_size=11)
+                   a2_detail, RGBColor(0xFA, 0xDB, 0xD8), font_size=11,
+                   font_color=BLACK, line_rgb=BLACK)
 
     # Arrows down to ICRD
     _add_arrow(slide, Inches(3.4), Inches(5.5), Inches(5.5), Inches(5.9))
@@ -215,15 +239,14 @@ def add_linko_framework_slide(prs, lang="en"):
     # Bottom: ICRD + output
     icrd_text = "ICR Discrepancy (ICRD) = max(ICR) - min(ICR)\n+ Prism Forest Plot Visualization" if lang == "en" else "ICR Discrepancy (ICRD) = max(ICR) - min(ICR)\n+ Prism Forest Plot\u53ef\u8996\u5316"
     _add_shape_box(slide, Inches(3.5), Inches(5.9), Inches(6.3), Inches(0.8),
-                   icrd_text, RGBColor(0x27, 0xAE, 0x60), font_size=12, bold=True)
-    shape = slide.shapes[-1]
-    for par in shape.text_frame.paragraphs:
-        par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                   icrd_text, RGBColor(0x27, 0xAE, 0x60), font_size=12, bold=True,
+                   font_color=WHITE, line_rgb=BLACK)
 
     # Recommendation
     rec_text = "Report ICRD alongside I\u00b2 and \u03c4\u00b2 in meta-analyses" if lang == "en" else "\u30e1\u30bf\u89e3\u6790\u3067I\u00b2\u3001\u03c4\u00b2\u3068\u3068\u3082\u306bICRD\u3092\u5831\u544a"
     _add_shape_box(slide, Inches(3.5), Inches(6.85), Inches(6.3), Inches(0.5),
-                   rec_text, RGBColor(0xF9, 0xE7, 0x9F), font_size=11, bold=True)
+                   rec_text, RGBColor(0xF9, 0xE7, 0x9F), font_size=11, bold=True,
+                   font_color=BLACK, line_rgb=BLACK)
 
     return slide
 
@@ -266,17 +289,19 @@ def add_study_workflow_slide(prs, lang="en"):
     top_y = Inches(1.3)
     bot_y = Inches(2.6)
 
+    WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+    BLACK = RGBColor(0x33, 0x33, 0x33)
+
     for i, (header, detail, color) in enumerate(steps):
         x = start_x + i * (box_w + gap)
-        # Header box
-        _add_shape_box(slide, x, top_y, box_w, box_h_top, header, color, font_size=13, bold=True)
-        shape = slide.shapes[-1]
-        for par in shape.text_frame.paragraphs:
-            par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+        # Header box (white text on colored background)
+        _add_shape_box(slide, x, top_y, box_w, box_h_top, header, color,
+                       font_size=13, bold=True, font_color=WHITE, line_rgb=BLACK)
 
-        # Detail box
+        # Detail box (black text on lighter background)
         detail_color = RGBColor(min(255, color[0] + 80), min(255, color[1] + 80), min(255, color[2] + 80))
-        _add_shape_box(slide, x, bot_y, box_w, box_h_bot, detail, detail_color, font_size=10)
+        _add_shape_box(slide, x, bot_y, box_w, box_h_bot, detail, detail_color,
+                       font_size=10, font_color=BLACK, line_rgb=BLACK)
 
         # Arrow between steps
         if i < len(steps) - 1:
@@ -287,10 +312,11 @@ def add_study_workflow_slide(prs, lang="en"):
     results_title = "Key Findings" if lang == "en" else "\u4e3b\u8981\u306a\u77e5\u898b"
     tx2 = slide.shapes.add_textbox(Inches(0.6), Inches(4.4), Inches(12.0), Inches(0.5))
     tf2 = tx2.text_frame
-    tf2.paragraphs[0].text = results_title
-    tf2.paragraphs[0].font.size = Pt(18)
-    tf2.paragraphs[0].font.bold = True
-    tf2.paragraphs[0].font.name = "Calibri"
+    run2 = tf2.paragraphs[0].add_run()
+    run2.text = results_title
+    run2.font.size = Pt(18)
+    run2.font.bold = True
+    run2.font.name = "Calibri"
 
     findings = [
         ("Simulation", "Heterogeneous ICR \u2192 Higher I\u00b2\n(11.7% vs 11.0%)", RGBColor(0x34, 0x98, 0xDB)),
@@ -308,12 +334,11 @@ def add_study_workflow_slide(prs, lang="en"):
 
     for i, (label, detail, color) in enumerate(findings):
         x = start_x + i * (box_w + gap)
-        _add_shape_box(slide, x, Inches(5.0), box_w, Inches(0.5), label, color, font_size=11, bold=True)
-        shape = slide.shapes[-1]
-        for par in shape.text_frame.paragraphs:
-            par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+        _add_shape_box(slide, x, Inches(5.0), box_w, Inches(0.5), label, color,
+                       font_size=11, bold=True, font_color=WHITE, line_rgb=BLACK)
         detail_color = RGBColor(min(255, color[0] + 80), min(255, color[1] + 80), min(255, color[2] + 80))
-        _add_shape_box(slide, x, Inches(5.6), box_w, Inches(1.0), detail, detail_color, font_size=10)
+        _add_shape_box(slide, x, Inches(5.6), box_w, Inches(1.0), detail, detail_color,
+                       font_size=10, font_color=BLACK, line_rgb=BLACK)
 
     return slide
 
@@ -333,37 +358,34 @@ def add_icr_concept_slide(prs, lang="en"):
     p.font.name = "Calibri"
     p.alignment = PP_ALIGN.CENTER
 
+    WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+    BLACK = RGBColor(0x33, 0x33, 0x33)
+
     # Study A: D=10
     sa_label = "Study A (D = 10)" if lang == "en" else "\u7814\u7a76A (D = 10)"
     _add_shape_box(slide, Inches(1.0), Inches(1.2), Inches(4.5), Inches(0.6),
-                   sa_label, RGBColor(0x2C, 0x3E, 0x50), font_size=16, bold=True)
-    shape = slide.shapes[-1]
-    for par in shape.text_frame.paragraphs:
-        par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                   sa_label, RGBColor(0x2C, 0x3E, 0x50), font_size=16, bold=True,
+                   font_color=WHITE, line_rgb=BLACK)
 
     # Study A grid: 10 small boxes, 1 highlighted
     for j in range(10):
         x = Inches(1.0) + j * Inches(0.45)
         color = RGBColor(0xE7, 0x4C, 0x3C) if j == 0 else RGBColor(0xBD, 0xC3, 0xC7)
+        fc = WHITE if j == 0 else BLACK
         _add_shape_box(slide, x, Inches(2.0), Inches(0.4), Inches(0.8),
-                       "EP" if j == 0 else f"V{j}", color, font_size=9)
-        if j == 0:
-            shape = slide.shapes[-1]
-            for par in shape.text_frame.paragraphs:
-                par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-                par.font.bold = True
+                       "EP" if j == 0 else f"V{j}", color, font_size=9,
+                       bold=(j == 0), font_color=fc, line_rgb=BLACK)
 
     icr_a_text = "ICR = 1/10 = 0.10 (10%)" if lang == "en" else "ICR = 1/10 = 0.10 (10%)"
     _add_shape_box(slide, Inches(1.0), Inches(3.0), Inches(4.5), Inches(0.5),
-                   icr_a_text, RGBColor(0xFA, 0xDB, 0xD8), font_size=14, bold=True)
+                   icr_a_text, RGBColor(0xFA, 0xDB, 0xD8), font_size=14, bold=True,
+                   font_color=BLACK, line_rgb=BLACK)
 
     # Study B: D=50
     sb_label = "Study B (D = 50)" if lang == "en" else "\u7814\u7a76B (D = 50)"
     _add_shape_box(slide, Inches(1.0), Inches(4.0), Inches(10.5), Inches(0.6),
-                   sb_label, RGBColor(0x2C, 0x3E, 0x50), font_size=16, bold=True)
-    shape = slide.shapes[-1]
-    for par in shape.text_frame.paragraphs:
-        par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                   sb_label, RGBColor(0x2C, 0x3E, 0x50), font_size=16, bold=True,
+                   font_color=WHITE, line_rgb=BLACK)
 
     # Study B grid: show ~25 boxes (representing 50)
     n_show = 25
@@ -371,17 +393,15 @@ def add_icr_concept_slide(prs, lang="en"):
         x = Inches(1.0) + j * Inches(0.42)
         color = RGBColor(0xE7, 0x4C, 0x3C) if j == 0 else RGBColor(0xBD, 0xC3, 0xC7)
         label = "EP" if j == 0 else ("..." if j == n_show - 1 else "")
+        fc = WHITE if j == 0 else BLACK
         _add_shape_box(slide, x, Inches(4.8), Inches(0.37), Inches(0.5),
-                       label, color, font_size=7)
-        if j == 0:
-            shape = slide.shapes[-1]
-            for par in shape.text_frame.paragraphs:
-                par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-                par.font.bold = True
+                       label, color, font_size=7, bold=(j == 0),
+                       font_color=fc, line_rgb=BLACK)
 
     icr_b_text = "ICR = 1/50 = 0.02 (2%)" if lang == "en" else "ICR = 1/50 = 0.02 (2%)"
     _add_shape_box(slide, Inches(1.0), Inches(5.5), Inches(10.5), Inches(0.5),
-                   icr_b_text, RGBColor(0xD6, 0xEA, 0xF8), font_size=14, bold=True)
+                   icr_b_text, RGBColor(0xD6, 0xEA, 0xF8), font_size=14, bold=True,
+                   font_color=BLACK, line_rgb=BLACK)
 
     # Bottom question
     q_text = ("Same endpoint, same effect size estimate\n"
@@ -391,7 +411,8 @@ def add_icr_concept_slide(prs, lang="en"):
               "\u2192 \u3057\u304b\u3057EP\u306f\u30c7\u30fc\u30bf\u7a7a\u9593\u306e10% vs 2%\n"
               "\u2192 ICRD = 0.08 \u2192 \u30d7\u30fc\u30ea\u30f3\u30b0\u306f\u59a5\u5f53\u304b\uff1f")
     _add_shape_box(slide, Inches(2.5), Inches(6.2), Inches(8.3), Inches(1.1),
-                   q_text, RGBColor(0xF9, 0xE7, 0x9F), font_size=13, bold=True)
+                   q_text, RGBColor(0xF9, 0xE7, 0x9F), font_size=13, bold=True,
+                   font_color=BLACK, line_rgb=BLACK)
 
     return slide
 
@@ -411,13 +432,14 @@ def add_prism_concept_slide(prs, lang="en"):
     p.font.name = "Calibri"
     p.alignment = PP_ALIGN.CENTER
 
+    WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+    BLACK = RGBColor(0x33, 0x33, 0x33)
+
     # Left: Standard Forest Plot
     std_label = "Standard Forest Plot" if lang == "en" else "\u6a19\u6e96\u30d5\u30a9\u30ec\u30b9\u30c8\u30d7\u30ed\u30c3\u30c8"
     _add_shape_box(slide, Inches(0.5), Inches(1.0), Inches(3.5), Inches(0.6),
-                   std_label, RGBColor(0x7F, 0x8C, 0x8D), font_size=14, bold=True)
-    shape = slide.shapes[-1]
-    for par in shape.text_frame.paragraphs:
-        par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                   std_label, RGBColor(0x7F, 0x8C, 0x8D), font_size=14, bold=True,
+                   font_color=WHITE, line_rgb=BLACK)
 
     std_items = [
         ("x-axis: Effect size", "\u2022"),
@@ -434,24 +456,22 @@ def add_prism_concept_slide(prs, lang="en"):
         y = Inches(1.8) + i * Inches(0.5)
         tx2 = slide.shapes.add_textbox(Inches(0.7), y, Inches(3.3), Inches(0.45))
         tf2 = tx2.text_frame
-        tf2.paragraphs[0].text = f"{bullet} {text}"
-        tf2.paragraphs[0].font.size = Pt(12)
-        tf2.paragraphs[0].font.name = "Calibri"
+        run = tf2.paragraphs[0].add_run()
+        run.text = f"{bullet} {text}"
+        run.font.size = Pt(12)
+        run.font.name = "Calibri"
+        run.font.color.rgb = BLACK
 
     # Arrow in the middle
     _add_shape_box(slide, Inches(4.5), Inches(2.5), Inches(1.5), Inches(0.7),
-                   "Prism\n\u2192", RGBColor(0x8E, 0x44, 0xAD), font_size=16, bold=True)
-    shape = slide.shapes[-1]
-    for par in shape.text_frame.paragraphs:
-        par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                   "Prism\n\u2192", RGBColor(0x8E, 0x44, 0xAD), font_size=16, bold=True,
+                   font_color=WHITE, line_rgb=BLACK)
 
     # Right: Prism Forest Plot
     prism_label = "LINKO Prism Forest Plot" if lang == "en" else "LINKO Prism Forest Plot"
     _add_shape_box(slide, Inches(6.5), Inches(1.0), Inches(6.0), Inches(0.6),
-                   prism_label, RGBColor(0x8E, 0x44, 0xAD), font_size=14, bold=True)
-    shape = slide.shapes[-1]
-    for par in shape.text_frame.paragraphs:
-        par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                   prism_label, RGBColor(0x8E, 0x44, 0xAD), font_size=14, bold=True,
+                   font_color=WHITE, line_rgb=BLACK)
 
     prism_items = [
         ("x-axis: Effect size (unchanged)", RGBColor(0x27, 0xAE, 0x60)),
@@ -467,10 +487,8 @@ def add_prism_concept_slide(prs, lang="en"):
     for i, (text, color) in enumerate(prism_items):
         y = Inches(1.8) + i * Inches(0.85)
         _add_shape_box(slide, Inches(6.5), y, Inches(6.0), Inches(0.75),
-                       text, color, font_size=11, align=PP_ALIGN.LEFT)
-        shape = slide.shapes[-1]
-        for par in shape.text_frame.paragraphs:
-            par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                       text, color, font_size=11, align=PP_ALIGN.LEFT,
+                       font_color=WHITE, line_rgb=BLACK)
 
     # Bottom: analogy
     analogy = ('Like a prism decomposes white light into its spectrum,\n'
@@ -480,7 +498,8 @@ def add_prism_concept_slide(prs, lang="en"):
                'Prism Forest Plot\u306f\u30d5\u30a9\u30ec\u30b9\u30c8\u30d7\u30ed\u30c3\u30c8\u3092\u5206\u89e3\u3057\u3066\n'
                '\u5404\u7814\u7a76\u306e\u96a0\u308c\u305fICR\u6b21\u5143\u3092\u660e\u3089\u304b\u306b\u3059\u308b\u3002')
     _add_shape_box(slide, Inches(2.0), Inches(5.8), Inches(9.3), Inches(1.0),
-                   analogy, RGBColor(0xF5, 0xF5, 0xF5), font_size=13, bold=False)
+                   analogy, RGBColor(0xF5, 0xF5, 0xF5), font_size=13, bold=False,
+                   font_color=RGBColor(0x55, 0x55, 0x55), line_rgb=BLACK)
 
     return slide
 
@@ -508,29 +527,30 @@ def add_table_slide(prs, title_text, headers, rows, caption=""):
     table_shape = slide.shapes.add_table(n_rows, n_cols, left, Inches(1.0), tbl_width, Inches(0.4 * n_rows))
     table = table_shape.table
 
-    # Header row
+    # Header row – set formatting on runs for reliable rendering
     for j, h in enumerate(headers):
         cell = table.cell(0, j)
-        cell.text = h
-        for par in cell.text_frame.paragraphs:
-            par.font.size = Pt(11)
-            par.font.bold = True
-            par.font.name = "Calibri"
-            par.alignment = PP_ALIGN.CENTER
+        cell.text = ""  # clear default
+        run = cell.text_frame.paragraphs[0].add_run()
+        run.text = h
+        run.font.size = Pt(11)
+        run.font.bold = True
+        run.font.name = "Calibri"
+        run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+        cell.text_frame.paragraphs[0].alignment = PP_ALIGN.CENTER
         cell.fill.solid()
         cell.fill.fore_color.rgb = RGBColor(0x2C, 0x3E, 0x50)
-        for par in cell.text_frame.paragraphs:
-            par.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
 
     # Data rows
     for i, row in enumerate(rows):
         for j, val in enumerate(row):
             cell = table.cell(i + 1, j)
-            cell.text = str(val)
-            for par in cell.text_frame.paragraphs:
-                par.font.size = Pt(10)
-                par.font.name = "Calibri"
-                par.alignment = PP_ALIGN.CENTER
+            cell.text = ""  # clear default
+            run = cell.text_frame.paragraphs[0].add_run()
+            run.text = str(val)
+            run.font.size = Pt(10)
+            run.font.name = "Calibri"
+            cell.text_frame.paragraphs[0].alignment = PP_ALIGN.CENTER
             if i % 2 == 0:
                 cell.fill.solid()
                 cell.fill.fore_color.rgb = RGBColor(0xF2, 0xF3, 0xF4)
@@ -540,11 +560,12 @@ def add_table_slide(prs, title_text, headers, rows, caption=""):
         tx2 = slide.shapes.add_textbox(Inches(0.5), Inches(1.2 + 0.4 * n_rows), Inches(12.3), Inches(0.4))
         tf2 = tx2.text_frame
         tf2.word_wrap = True
-        tf2.paragraphs[0].text = caption
-        tf2.paragraphs[0].font.size = Pt(10)
-        tf2.paragraphs[0].font.italic = True
-        tf2.paragraphs[0].font.name = "Calibri"
-        tf2.paragraphs[0].font.color.rgb = RGBColor(0x66, 0x66, 0x66)
+        run = tf2.paragraphs[0].add_run()
+        run.text = caption
+        run.font.size = Pt(10)
+        run.font.italic = True
+        run.font.name = "Calibri"
+        run.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
 
     return slide
 
