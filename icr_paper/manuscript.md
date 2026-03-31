@@ -20,19 +20,39 @@
 
 ## Abstract
 
-**Aim(s)**: We introduce the LINKO (Latent Information Normalization for Key Outcomes) framework, which proposes the Information Contribution Ratio (ICR) as a novel diagnostic measure for assessing whether endpoint variables carry equivalent informational weight across studies entering a meta-analysis.
+**Aim(s)**: We introduce the LINKO (Latent Information Normalization for Key Outcomes) framework, proposing the Information Contribution Ratio (ICR) as a diagnostic measure for assessing whether endpoint variables carry equivalent informational weight across studies in a meta-analysis.
 
-**Background**: Meta-analysis pools endpoint-level effect sizes from multiple randomized controlled trials (RCTs). However, each RCT collects a different number of variables, meaning the endpoint may represent vastly different proportions of the total information space across studies. This structural heterogeneity is not captured by existing measures such as I-squared or tau-squared.
+**Background**: Meta-analysis pools effect sizes from multiple RCTs, but each RCT collects different numbers of variables, meaning the endpoint may represent vastly different proportions of the total information space. This structural heterogeneity is not captured by I-squared or tau-squared.
 
-**Methods**: We define ICR as the proportion of a study's total data information attributable to its endpoint. Two complementary approaches are developed: (1) a variance-based approach (ICR_std = d/D) computable from published Table 1 summary statistics, and (2) a PCA-based approach (ICR_pca) using individual patient data (IPD). We also introduce the Prism Forest Plot, a novel visualization encoding ICR as color and point-size dimensions. The framework is validated through Monte Carlo simulation (100 iterations x 3 scenarios, reported following the ADEMP framework), analysis of two real-world meta-analysis domains (statin therapy, intensive glucose control), PCA-based validation using the International Stroke Trial (IST) dataset (19,435 patients, 25 variables, 8 country sub-studies), leave-one-out sensitivity analysis, and an early convergence simulation (500 iterations).
+**Methods**: We define ICR as the proportion of a study's total data information attributable to its endpoint. Two approaches are developed: (1) a variance-based approach (ICR_std = d/D) computable from published Table 1 statistics, and (2) a PCA-based approach (ICR_pca) using individual patient data. We introduce the Prism Forest Plot encoding ICR as color and size dimensions. Validation includes Monte Carlo simulation (ADEMP framework), two real-world domains, PCA validation using the IST dataset (19,435 patients, 8 country sub-studies), and leave-one-out sensitivity analysis.
 
-**Results**: In simulation, studies with heterogeneous ICR showed higher mean I-squared (11.7%) than those with uniform ICR (11.0%). In real-world data, a stable meta-analysis (statin therapy) had low ICR discrepancy (ICRD = 0.009, I-squared = 0.0%), while a heterogeneous meta-analysis (glucose control) showed higher ICRD (0.048, I-squared = 17.0%). PCA-based ICR varied 4-fold across IST country sub-studies (ICR_pca loading: 0.046-0.180, CV = 0.36), and regression-based ICR_pca correlated strongly with 14-day mortality (r = 0.90, p = 0.003), robust across leave-one-out analysis (r = 0.84-0.95, all p < 0.02). The Prism Forest Plot visually revealed structural heterogeneity invisible in standard forest plots.
+**Results**: In simulation, heterogeneous ICR yielded higher I-squared (11.7% vs 11.0%). In real-world data, statin therapy (low ICRD = 0.009) showed I-squared = 0.0%, while glucose control (ICRD = 0.048) showed I-squared = 17.0%. PCA-based ICR varied 4-fold across IST sub-studies (CV = 0.36); regression-based ICR_pca correlated with 14-day mortality (r = 0.90, p = 0.003), robust in leave-one-out analysis (r = 0.84-0.95, all p < 0.02).
 
-**Conclusions**: LINKO provides a computable diagnostic framework for assessing structural comparability of studies in a meta-analysis. We recommend reporting ICR discrepancy alongside I-squared and tau-squared to improve transparency in evidence synthesis.
+**Conclusions**: LINKO provides a computable diagnostic for assessing structural comparability in meta-analysis. We recommend reporting ICR discrepancy alongside I-squared and tau-squared.
 
 **Keywords**: meta-analysis, heterogeneity, information contribution ratio, evidence synthesis, principal component analysis, individual patient data, forest plot
 
 **Research Synthesis Keywords**: meta-analysis heterogeneity diagnostics; structural heterogeneity; individual participant data synthesis; novel visualization methods; simulation study
+
+---
+
+## What is already known
+
+- Meta-analysis heterogeneity is assessed using I-squared and tau-squared, which capture statistical variability across studies.
+- Sources of heterogeneity are typically categorized as clinical, methodological, or statistical diversity.
+- Differences in the number and type of variables collected across RCTs are acknowledged but not formally quantified in current meta-analytic practice.
+
+## What is new
+
+- We propose the Information Contribution Ratio (ICR), a measure of how much of a study's total data information is captured by its endpoint, computable from published Table 1 summary statistics.
+- We introduce a PCA-based ICR approach for individual patient data that captures the full covariance structure of the endpoint within each study.
+- The Prism Forest Plot extends the standard forest plot by encoding ICR as color and point-size dimensions, making structural heterogeneity immediately visible.
+
+## Potential impact for RSM readers outside the authors' field
+
+- Meta-analysts across all disciplines can retrospectively compute ICR for any published RCT using Table 1 data, without requiring individual patient data or additional statistical software.
+- The Prism Forest Plot offers an intuitive visual diagnostic that can be adopted in any systematic review to reveal whether studies being pooled have comparable informational structures.
+- ICR discrepancy provides a new criterion for assessing study comparability in evidence synthesis guidelines, potentially informing GRADE certainty assessments and Cochrane review protocols.
 
 ---
 

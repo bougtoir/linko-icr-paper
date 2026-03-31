@@ -121,45 +121,63 @@ def build_english():
     para(doc, 'Corresponding author: Tatsuki Onishi, [Email], ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX', align=WD_ALIGN_PARAGRAPH.CENTER)
     doc.add_page_break()
 
-    # Abstract (RSM structured format)
+    # Abstract (RSM structured format, <=250 words)
     heading(doc, 'Abstract', 1)
     bold_then_normal(doc, 'Aim(s): ',
-        'We introduce the LINKO (Latent Information Normalization for Key Outcomes) framework, which proposes '
-        'the Information Contribution Ratio (ICR) as a novel diagnostic measure for assessing whether endpoint '
-        'variables carry equivalent informational weight across studies entering a meta-analysis.')
+        'We introduce the LINKO (Latent Information Normalization for Key Outcomes) framework, proposing '
+        'the Information Contribution Ratio (ICR) as a diagnostic measure for assessing whether endpoint '
+        'variables carry equivalent informational weight across studies in a meta-analysis.')
     bold_then_normal(doc, 'Background: ',
-        'Meta-analysis pools endpoint-level effect sizes from multiple randomized controlled trials (RCTs). '
-        'However, each RCT collects a different number of variables, meaning the endpoint may represent vastly '
-        'different proportions of the total information space across studies. This structural heterogeneity is '
-        'not captured by existing measures such as I-squared or tau-squared.')
+        'Meta-analysis pools effect sizes from multiple RCTs, but each RCT collects different numbers of '
+        'variables, meaning the endpoint may represent vastly different proportions of the total information '
+        'space. This structural heterogeneity is not captured by I-squared or tau-squared.')
     bold_then_normal(doc, 'Methods: ',
         'We define ICR as the proportion of a study\'s total data information attributable to its endpoint. '
-        'Two complementary approaches are developed: (1) a variance-based approach (ICR_std = d/D) computable '
-        'from published Table 1 summary statistics, and (2) a PCA-based approach (ICR_pca) using individual '
-        'patient data (IPD). We also introduce the Prism Forest Plot, a novel visualization encoding ICR as '
-        'color and point-size dimensions. The framework is validated through Monte Carlo simulation '
-        '(100 iterations x 3 scenarios, reported following the ADEMP framework), analysis of two real-world '
-        'meta-analysis domains (statin therapy, intensive glucose control), PCA-based validation using the '
-        'International Stroke Trial (IST) dataset (19,435 patients, 25 variables, 8 country sub-studies), '
-        'leave-one-out sensitivity analysis, and an early convergence simulation (500 iterations).')
+        'Two approaches are developed: (1) a variance-based approach (ICR_std = d/D) computable from published '
+        'Table 1 statistics, and (2) a PCA-based approach (ICR_pca) using individual patient data. We introduce '
+        'the Prism Forest Plot encoding ICR as color and size dimensions. Validation includes Monte Carlo '
+        'simulation (ADEMP framework), two real-world domains, PCA validation using the IST dataset '
+        '(19,435 patients, 8 country sub-studies), and leave-one-out sensitivity analysis.')
     bold_then_normal(doc, 'Results: ',
-        'In simulation, studies with heterogeneous ICR showed higher mean I-squared (11.7%) than those with '
-        'uniform ICR (11.0%). In real-world data, a stable meta-analysis (statin therapy) had low ICR discrepancy '
-        '(ICRD = 0.009, I-squared = 0.0%), while a heterogeneous meta-analysis (glucose control) showed higher '
-        'ICRD (0.048, I-squared = 17.0%). PCA-based ICR varied 4-fold across IST country sub-studies '
-        '(ICR_pca loading: 0.046-0.180, CV = 0.36), and regression-based ICR_pca correlated strongly with '
-        '14-day mortality (r = 0.90, p = 0.003), robust across leave-one-out analysis (r = 0.84-0.95, all p < 0.02). '
-        'The Prism Forest Plot visually revealed structural heterogeneity invisible in standard forest plots.')
+        'In simulation, heterogeneous ICR yielded higher I-squared (11.7% vs 11.0%). In real-world data, '
+        'statin therapy (low ICRD = 0.009) showed I-squared = 0.0%, while glucose control (ICRD = 0.048) '
+        'showed I-squared = 17.0%. PCA-based ICR varied 4-fold across IST sub-studies (CV = 0.36); '
+        'regression-based ICR_pca correlated with 14-day mortality (r = 0.90, p = 0.003), robust in '
+        'leave-one-out analysis (r = 0.84-0.95, all p < 0.02).')
     bold_then_normal(doc, 'Conclusions: ',
-        'LINKO provides a computable diagnostic framework for assessing structural comparability of studies in '
-        'a meta-analysis. We recommend reporting ICR discrepancy alongside I-squared and tau-squared to improve '
-        'transparency in evidence synthesis.')
+        'LINKO provides a computable diagnostic for assessing structural comparability in meta-analysis. '
+        'We recommend reporting ICR discrepancy alongside I-squared and tau-squared.')
     bold_then_normal(doc, 'Keywords: ',
         'meta-analysis, heterogeneity, information contribution ratio, evidence synthesis, principal component '
         'analysis, individual patient data, forest plot')
     bold_then_normal(doc, 'Research Synthesis Keywords: ',
         'meta-analysis heterogeneity diagnostics; structural heterogeneity; individual participant data synthesis; '
         'novel visualization methods; simulation study')
+    doc.add_page_break()
+
+    # What is already known / What is new / Potential impact (RSM required)
+    heading(doc, 'What is already known', 2)
+    para(doc, '\u2022 Meta-analysis heterogeneity is assessed using I-squared and tau-squared, which capture '
+        'statistical variability across studies.')
+    para(doc, '\u2022 Sources of heterogeneity are typically categorized as clinical, methodological, or statistical diversity.')
+    para(doc, '\u2022 Differences in the number and type of variables collected across RCTs are acknowledged but not '
+        'formally quantified in current meta-analytic practice.')
+    para(doc, '')
+    heading(doc, 'What is new', 2)
+    para(doc, '\u2022 We propose the Information Contribution Ratio (ICR), a measure of how much of a study\'s total '
+        'data information is captured by its endpoint, computable from published Table 1 summary statistics.')
+    para(doc, '\u2022 We introduce a PCA-based ICR approach for individual patient data that captures the full '
+        'covariance structure of the endpoint within each study.')
+    para(doc, '\u2022 The Prism Forest Plot extends the standard forest plot by encoding ICR as color and point-size '
+        'dimensions, making structural heterogeneity immediately visible.')
+    para(doc, '')
+    heading(doc, 'Potential impact for RSM readers outside the authors\' field', 2)
+    para(doc, '\u2022 Meta-analysts across all disciplines can retrospectively compute ICR for any published RCT '
+        'using Table 1 data, without requiring individual patient data or additional statistical software.')
+    para(doc, '\u2022 The Prism Forest Plot offers an intuitive visual diagnostic that can be adopted in any systematic '
+        'review to reveal whether studies being pooled have comparable informational structures.')
+    para(doc, '\u2022 ICR discrepancy provides a new criterion for assessing study comparability in evidence synthesis '
+        'guidelines, potentially informing GRADE certainty assessments and Cochrane review protocols.')
     doc.add_page_break()
 
     # Introduction (RSM uses Introduction, not Background)
@@ -567,42 +585,59 @@ def build_japanese():
     para(doc, '責任著者: 大西達輝, [メールアドレス], ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX', align=WD_ALIGN_PARAGRAPH.CENTER)
     doc.add_page_break()
 
-    # Abstract (RSM structured format)
+    # Abstract (RSM structured format, <=250 words)
     heading(doc, '抄録', 1)
     bold_then_normal(doc, '目的: ',
         'LINKO (Latent Information Normalization for Key Outcomes) フレームワークを導入し、'
-        'メタ解析に参入する各研究間でエンドポイント変数が同等の情報的重みを持つかを評価する'
-        '新しい診断指標としてInformation Contribution Ratio (ICR)を提案する。')
+        'メタ解析における各研究間でエンドポイント変数が同等の情報的重みを持つかを評価する'
+        '診断指標としてInformation Contribution Ratio (ICR)を提案する。')
     bold_then_normal(doc, '背景: ',
-        'メタ解析は複数のランダム化比較試験(RCT)のエンドポイントレベルの効果量をプールする。'
-        'しかし、各RCTは異なる数の変数を収集しており、エンドポイントが総情報空間に占める割合は'
-        '研究間で大きく異なりうる。この構造的異質性はI²やτ²などの既存の指標では捉えられない。')
+        'メタ解析は複数のRCTの効果量をプールするが、各RCTは異なる数の変数を収集しており、'
+        'エンドポイントが総情報空間に占める割合は研究間で大きく異なりうる。'
+        'この構造的異質性はI²やτ²では捉えられない。')
     bold_then_normal(doc, '方法: ',
         'ICRを研究の総データ情報のうちエンドポイントに帰属する割合として定義する。'
-        '2つの相補的アプローチを開発した: (1) Table 1要約統計量から計算可能な分散ベースアプローチ(ICR_std = d/D)、'
-        '(2) 個票データ(IPD)を用いるPCAベースアプローチ(ICR_pca)。'
-        'また、ICRを色と点サイズの次元でエンコードする新しい可視化手法Prism Forest Plotを導入した。'
-        'モンテカルロシミュレーション(100反復×3シナリオ、ADEMPフレームワークに準拠して報告)、'
-        '実社会メタ解析2領域(スタチン療法、強化血糖コントロール)の分析、'
-        'International Stroke Trial (IST)データセット(19,435名、25変数、8か国サブスタディ)でのPCA検証、'
-        'Leave-one-out感度分析、早期収束シミュレーション(500反復)により検証した。')
+        '2つのアプローチを開発: (1) Table 1統計量から計算可能な分散ベース(ICR_std = d/D)、'
+        '(2) 個票データを用いるPCAベース(ICR_pca)。'
+        'ICRを色とサイズでエンコードするPrism Forest Plotを導入。'
+        'モンテカルロシミュレーション(ADEMPフレームワーク)、実社会2領域、'
+        'ISTデータセット(19,435名、8か国サブスタディ)でのPCA検証、'
+        'Leave-one-out感度分析により検証した。')
     bold_then_normal(doc, '結果: ',
-        'シミュレーションでは、異質なICRを持つ研究群は均一ICR群より高い平均I²(11.7% vs 11.0%)を示した。'
-        '実データでは、安定したメタ解析(スタチン療法)はICRD = 0.009(I² = 0.0%)と低く、'
-        '異質なメタ解析(血糖コントロール)はICRD = 0.048(I² = 17.0%)と高かった。'
-        'IST国別サブスタディ間でPCAベースICRは4倍の変動を示し'
-        '(ICR_pca loading: 0.046-0.180, CV = 0.36)、'
-        '回帰法ICR_pcaは14日死亡率と強く相関した(r = 0.90, p = 0.003)。'
-        'Leave-one-out分析で頑健性を確認(r = 0.84-0.95, 全てp < 0.02)。'
-        'Prism Forest Plotは標準フォレストプロットでは見えない構造的異質性を視覚的に明示した。')
+        'シミュレーションで異質ICR群は均一群より高いI²を示した(11.7% vs 11.0%)。'
+        '実データでスタチン療法(低ICRD = 0.009)はI² = 0.0%、血糖コントロール(ICRD = 0.048)はI² = 17.0%。'
+        'IST国別サブスタディでPCAベースICRは4倍変動(CV = 0.36)、'
+        '回帰法ICR_pcaは14日死亡率と相関(r = 0.90, p = 0.003)、'
+        'Leave-one-out分析で頑健(r = 0.84-0.95, 全p < 0.02)。')
     bold_then_normal(doc, '結論: ',
-        'LINKOはメタ解析における研究の構造的比較可能性を評価する計算可能な診断フレームワークを提供する。'
-        'ICR discrepancyをI²およびτ²とともに報告し、エビデンス統合の透明性向上に寄与することを推奨する。')
+        'LINKOはメタ解析の構造的比較可能性を評価する計算可能な診断ツールを提供する。'
+        'ICR discrepancyをI²・τ²とともに報告することを推奨する。')
     bold_then_normal(doc, 'キーワード: ',
         'メタ解析, 異質性, 情報寄与比, エビデンス統合, 主成分分析, 個票データ, フォレストプロット')
     bold_then_normal(doc, 'Research Synthesis Keywords: ',
         'meta-analysis heterogeneity diagnostics; structural heterogeneity; individual participant data synthesis; '
         'novel visualization methods; simulation study')
+    doc.add_page_break()
+
+    # What is already known / What is new / Potential impact (RSM required)
+    heading(doc, '既知の知見 (What is already known)', 2)
+    para(doc, '\u2022 メタ解析の異質性はI²およびτ²で評価され、研究間の統計的変動を捉える。')
+    para(doc, '\u2022 異質性の源泉は臨床的、方法論的、統計的多様性に分類される。')
+    para(doc, '\u2022 RCT間で収集される変数の数や種類の違いは認識されているが、現行のメタ解析では正式に定量化されていない。')
+    para(doc, '')
+    heading(doc, '新規性 (What is new)', 2)
+    para(doc, '\u2022 Information Contribution Ratio (ICR)を提案: 研究の総データ情報のうちエンドポイントが占める割合を、'
+        'Table 1要約統計量から計算可能。')
+    para(doc, '\u2022 個票データ用のPCAベースICRアプローチを導入: エンドポイントの完全な共分散構造を捉える。')
+    para(doc, '\u2022 Prism Forest Plotにより、ICRを色と点サイズで可視化し、構造的異質性を即座に識別可能。')
+    para(doc, '')
+    heading(doc, 'RSM読者への潜在的影響 (Potential impact for RSM readers outside the authors\' field)', 2)
+    para(doc, '\u2022 全分野のメタ解析研究者が、個票データや追加ソフトウェアなしに、Table 1データのみで'
+        '任意の既刊RCTのICRを遡及的に算出可能。')
+    para(doc, '\u2022 Prism Forest Plotは、プールされる研究の情報構造の比較可能性を'
+        '直感的に評価できる視覚的診断ツールとして、あらゆる系統的レビューに導入可能。')
+    para(doc, '\u2022 ICR discrepancyはエビデンス統合ガイドラインにおける研究比較可能性の新しい基準を提供し、'
+        'GRADEの確実性評価やCochraneレビュープロトコルに情報を提供しうる。')
     doc.add_page_break()
 
     # Introduction (RSM uses Introduction, not Background)
