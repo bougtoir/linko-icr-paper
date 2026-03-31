@@ -212,3 +212,224 @@ ICRDが大きい（研究間でICRが不均一な）メタ解析は、ICRDが小
 - DerSimonian R, Laird N. Meta-analysis in clinical trials. Control Clin Trials. 1986.
 - Riley RD, et al. Individual participant data meta-analysis. BMJ. 2010.
 - Jolliffe IT. Principal Component Analysis. Springer. 2002.
+
+---
+
+# English Translation
+
+---
+
+# Information Contribution Ratio (ICR): A Novel Framework for Evaluating Meta-Analysis Validity
+
+## Research Specification
+
+---
+
+## 1. Background and Motivation
+
+Randomized controlled trials (RCTs) collect many variables from subjects (baseline characteristics, laboratory values, comorbidities, etc.), but ultimately only one or a few endpoints (primary outcomes) are combined in a meta-analysis.
+
+**Fundamental Question**: How much “informational weight” does the endpoint have in the total original RCT data? If the weights vary widely between studies, is a meta-analysis that simply combines endpoints appropriate?
+
+### Specific example
+- 2-dimensional outcomes extracted from 10-dimensional data (20% contribution)
+- Same 2-dimensional outcome extracted from 50-dimensional data (4% contribution)
+- Can these be treated equally?
+
+---
+
+## 2. Definitions
+
+### 2.1 Information Contribution Ratio (ICR)
+The percentage of information that the endpoint variables account for in the entire variable set of an RCT.
+**Variance-based ICR (ICR_v)**:
+
+````
+ICR_v(E) = Σ_{j∈E} Var(X_j) / Σ_{j=1}^{D} Var(X_j)
+````
+
+where:
+- D: Number of dimensions of all variables
+- E: Set of endpoint variables (|E| = d)
+- Var(X_j): Variance of variable j (after standardization)
+
+**Principal component-based ICR (PCA-based ICR; ICR_pca)**:
+
+````
+ICR_pca(E) = Σ_{k: PC_k ∈ S_E} λ_k / Σ_{k=1}^{D} λ_k
+````
+
+where:
+- λ_k: Eigenvalue of the kth principal component
+- S_E: Set of principal components dominated by endpoint variables
+
+### 2.2 ICR Discrepancy (ICRD)
+An index that measures the difference in ICR between multiple RCTs.
+
+````
+ICRD = max(ICR_i) - min(ICR_i) (i = 1, ..., K studies)
+````
+
+or coefficient of variation:
+````
+ICRD_cv = SD(ICR_1, ..., ICR_K) / mean(ICR_1, ..., ICR_K)
+````
+
+---
+
+## 3. Study Design
+
+### Phase 1: Building a theoretical framework
+1. Mathematical definition and proof of properties of ICR_v
+2. Definition of ICR_pca (if individual data is available)
+3. Derivation of the theoretical relationship between ICRD and meta-analysis heterogeneity (I² statistic)
+
+### Phase 2: Simulation research (virtual data verification)
+
+#### Scenario A: Uniform ICR
+- Generate K RCTs (same number of dimensions D, same covariance structure in each RCT)
+- Endpoint ICRs are approximately equal across studies
+- **Expectations**: Meta-analysis shows consistent results (low I²)
+
+#### Scenario B: Non-uniform ICR
+- Generate K RCTs (different dimensionality D or different covariance structure in each RCT)
+- Endpoint ICRs vary widely between studies
+- **Expectation**: Increased heterogeneity in meta-analysis (high I²)
+
+#### Scenario C: Stepwise meta-analysis
+- First, meta-analysis on 5 RCTs (uniform ICR) → Consistent results
+- Add 10 additional RCTs (heterogeneity ICR) → increase heterogeneity
+- Reproduction of patterns observed in the real world
+
+#### Parameter settings
+- Number of RCTs: K = 5, 10, 15, 20
+- Number of variable dimensions: D = 10, 20, 50, 100
+- Number of endpoint dimensions: d = 1, 2
+- Sample size: N = 100, 200, 500
+- True effect size: δ = 0.2 (small), 0.5 (medium), 0.8 (large)
+- ICR range: 0.02 ~ 0.50
+- Repeat: 1000 times
+
+### Phase 3: Verification with real-world data
+
+#### 3a. Table1-based approach (ICR_v)
+ICR_v was calculated from Table 1 of published papers and its correlation with meta-analysis heterogeneity was verified.
+
+**Target candidates**:
+- Cases where a small number of initial RCTs yielded consistent results, but additional RCTs increased heterogeneity
+- or vice versa
+
+#### 3b. Individual data database approach (ICR_pca)
+Calculate PCA-based ICR for meta-analyses for which Individual Patient Data (IPD) is publicly available.
+
+**Data source candidates**:
+- YODA Project (Yale Open Data Access)
+- ClinicalStudyDataRequest.com
+-Vivli
+- Cochrane IPD meta-analyses with open data
+- PhysioNet (clinical trial data)
+
+---
+
+## 4. Method details (Methods)
+
+### 4.1 ICR_v calculation procedure (reported data only)
+
+**Input**: Table 1 (summary statistics by group) of RCT paper, endpoint results
+
+1. **Distributed reconstruction of continuous variables**:
+   ````
+μ_all = (N_I × μ_I + N_C × μ_C) / N
+   Var(X_j) = [(N_I-1)σ²_{I,j} + (N_C-1)σ²_{C,j} + N_I(μ_{I,j} - μ_j)² + N_C(μ_{C,j} - μ_j)²] / (N-1)
+   ````
+
+2. **Distribution of binary variables**:
+   ````
+   p_all = (N_I × p_I + N_C × p_C) / N
+   Var(X_j) = p_all(1 - p_all)
+   ````
+
+3. **Standardization**: Z-score all variables (normalized to variance = 1)
+
+4. **ICR_v calculation**:
+   ````
+   ICR_v = d / D (approximate to the dimensionality ratio since the variance of each variable is 1 after standardization)
+   ````
+
+   For non-standardization:
+   ````
+   ICR_v = Σ_{j∈E} Var(X_j) / Σ_{j=1}^{D} Var(X_j)
+   ````
+
+### 4.2 ICR_pca calculation procedure (individual data)
+
+**Input**: RCT individual data (all variables)
+
+1. Standardize all variables (mean 0, variance 1)
+2. Calculate the covariance matrix
+3. PCA execution, eigenvalue/eigenvector acquisition
+4. Calculate loadings of endpoint variables for each principal component
+5. Identify principal components dominated by endpoint variables
+6. Total contribution rate of the relevant principal component = ICR_pca
+
+**Regression contribution approach**:
+````
+Y_endpoint = β_1 PC_1 + β_2 PC_2 + ... + β_D PC_D + ε
+ICR_pca_reg = Σ_k (β_k² × λ_k) / Var(Y_endpoint)
+````
+
+### 4.3 Integration with meta-analysis
+
+1. Calculate ICR for each RCT
+2. Conduct standard meta-analysis (random effects model)
+3. Calculate I² statistic, τ²
+4. Test the correlation between ICRD and I²
+5. Proposal for ICR-weighted meta-analysis: Modified model that incorporates ICR into the weights
+
+---
+
+## 5. Hypotheses
+
+### Main hypothesis (H1)
+Meta-analyses with large ICRDs (with heterogeneous ICRs across studies) exhibit higher heterogeneity (I²) than meta-analyses with small ICRDs.
+
+### Subhypothesis
+- **H2**: ICR_v and ICR_pca show a positive correlation (approximation from reported data is appropriate)
+- **H3**: ICR weighted meta-analysis has higher estimation accuracy than standard meta-analysis
+- **H4**: In stepwise meta-analysis, analysis of only RCTs with uniform ICR is stable, and addition of RCTs with heterogeneous ICR makes it unstable.
+
+---
+
+## 6. Outputs
+
+### Code artifacts
+- `icr_paper/src/icr_calculator.py`: ICR_v calculation core function
+- `icr_paper/src/pca_icr_calculator.py`: ICR_pca calculation (for individual data)
+- `icr_paper/src/simulation.py`: Simulation research code
+- `icr_paper/src/meta_analysis.py`: Meta analysis utility
+- `icr_paper/src/real_world_analysis.py`: Real-world data analysis
+
+### Thesis work product
+- `icr_paper/manuscript.md`: Paper manuscript
+- `icr_paper/figures/`: Figures and tables
+
+---
+
+## 7. Timeline
+
+| Phase | Content | Status |
+|-------|------|------|
+| 1 | Specification formulation | In progress |
+| 2 | Simulation code implementation and execution | Next |
+| 3 | Real-world data research and analysis | Schedule |
+| 4 | Paper manuscript preparation | Schedule |
+
+---
+
+## 8. Possible references
+
+- Higgins JPT, Thompson SG. Quantifying heterogeneity in a meta-analysis. Stat Med. 2002.
+- DerSimonian R, Laird N. Meta-analysis in clinical trials. Control Clin Trials. 1986.
+- Riley RD, et al. Individual participant data meta-analysis. BMJ. 2010.
+- Jolliffe IT. Principal Component Analysis. Springer. 2002.
+
