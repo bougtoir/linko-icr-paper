@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate BMC Research Methodology-compliant DOCX files (English + Japanese)."""
+"""Generate Research Synthesis Methods-compliant DOCX files (English + Japanese)."""
 
 import os
 import sys
@@ -113,54 +113,57 @@ def build_english():
     r.bold = True
     r.font.name = 'Times New Roman'
     para(doc, '')
-    para(doc, '[Author names]', align=WD_ALIGN_PARAGRAPH.CENTER)
+    para(doc, 'Running head: LINKO: Information Contribution Ratio for Meta-Analysis Validity', italic=True, align=WD_ALIGN_PARAGRAPH.CENTER)
+    para(doc, '')
+    para(doc, 'Tatsuki Onishi [ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX]', align=WD_ALIGN_PARAGRAPH.CENTER)
     para(doc, '[Affiliations]', align=WD_ALIGN_PARAGRAPH.CENTER)
     para(doc, '')
-    para(doc, 'Corresponding author: [Name, Email]', align=WD_ALIGN_PARAGRAPH.CENTER)
+    para(doc, 'Corresponding author: Tatsuki Onishi, [Email], ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX', align=WD_ALIGN_PARAGRAPH.CENTER)
     doc.add_page_break()
 
-    # Abstract
+    # Abstract (RSM structured format)
     heading(doc, 'Abstract', 1)
+    bold_then_normal(doc, 'Aim(s): ',
+        'We introduce the LINKO (Latent Information Normalization for Key Outcomes) framework, which proposes '
+        'the Information Contribution Ratio (ICR) as a novel diagnostic measure for assessing whether endpoint '
+        'variables carry equivalent informational weight across studies entering a meta-analysis.')
     bold_then_normal(doc, 'Background: ',
-        'Meta-analysis pools endpoint-level results from multiple randomized controlled trials (RCTs) '
-        'to produce synthesized evidence. However, each RCT collects a different number and type of variables, '
-        'meaning the endpoint may represent vastly different proportions of the total information space across studies. '
-        'No existing framework quantifies this structural heterogeneity.')
+        'Meta-analysis pools endpoint-level effect sizes from multiple randomized controlled trials (RCTs). '
+        'However, each RCT collects a different number of variables, meaning the endpoint may represent vastly '
+        'different proportions of the total information space across studies. This structural heterogeneity is '
+        'not captured by existing measures such as I-squared or tau-squared.')
     bold_then_normal(doc, 'Methods: ',
-        'We propose the LINKO (Latent Information Normalization for Key Outcomes) framework, centered on '
-        'the Information Contribution Ratio (ICR), defined as the proportion of total data information '
-        'attributable to the endpoint. Two approaches are developed: (1) a variance-based approach (ICR_v) computable '
-        'from published Table 1 summary statistics, and (2) a PCA-based approach (ICR_pca) using individual patient data. '
-        'We also introduce the Prism Forest Plot, a novel visualization encoding ICR as color and size dimensions. '
-        'We validate the framework through Monte Carlo simulation (100 iterations x 3 scenarios), analysis of two '
-        'real-world meta-analysis domains (statin therapy, intensive glucose control), PCA-based validation using '
-        'the International Stroke Trial (IST) dataset (19,435 patients, 25 variables, 8 country sub-studies), '
-        'and an early convergence analysis (500 iterations). '
-        'Leave-one-out sensitivity analysis assessed robustness. '
-        'The simulation study is reported following the ADEMP framework.')
+        'We define ICR as the proportion of a study\'s total data information attributable to its endpoint. '
+        'Two complementary approaches are developed: (1) a variance-based approach (ICR_std = d/D) computable '
+        'from published Table 1 summary statistics, and (2) a PCA-based approach (ICR_pca) using individual '
+        'patient data (IPD). We also introduce the Prism Forest Plot, a novel visualization encoding ICR as '
+        'color and point-size dimensions. The framework is validated through Monte Carlo simulation '
+        '(100 iterations x 3 scenarios, reported following the ADEMP framework), analysis of two real-world '
+        'meta-analysis domains (statin therapy, intensive glucose control), PCA-based validation using the '
+        'International Stroke Trial (IST) dataset (19,435 patients, 25 variables, 8 country sub-studies), '
+        'leave-one-out sensitivity analysis, and an early convergence simulation (500 iterations).')
     bold_then_normal(doc, 'Results: ',
-        'In simulations, studies with heterogeneous ICR showed higher mean I-squared (11.7%) than those with '
-        'uniform ICR (11.0%). In real-world data, the stable statin meta-analysis had low ICR discrepancy (ICRD = 0.009, '
-        'I-squared = 0.0%), while the heterogeneous glucose control meta-analysis showed higher ICRD (0.048, '
-        'I-squared = 17.0%). The Prism Forest Plot visually revealed these differences: uniform colors for statins vs. '
-        'a clear color gradient for glucose control. PCA-based ICR analysis of the IST dataset revealed that the endpoint\'s informational '
-        'weight varied substantially across country sub-studies (ICR_pca loading: 0.046-0.180, CV = 0.36). '
-        'The regression-based ICR_pca correlated strongly with 14-day mortality (r = 0.90, p = 0.003), and this '
-        'association was robust in leave-one-out analysis (r = 0.84-0.95, all p < 0.02). '
-        'Early convergence simulation showed that LINKO-optimized study selection achieved the lowest mean studies '
-        'to I-squared < 25% (3.14 vs 3.19-3.20 for other strategies).')
+        'In simulation, studies with heterogeneous ICR showed higher mean I-squared (11.7%) than those with '
+        'uniform ICR (11.0%). In real-world data, a stable meta-analysis (statin therapy) had low ICR discrepancy '
+        '(ICRD = 0.009, I-squared = 0.0%), while a heterogeneous meta-analysis (glucose control) showed higher '
+        'ICRD (0.048, I-squared = 17.0%). PCA-based ICR varied 4-fold across IST country sub-studies '
+        '(ICR_pca loading: 0.046-0.180, CV = 0.36), and regression-based ICR_pca correlated strongly with '
+        '14-day mortality (r = 0.90, p = 0.003), robust across leave-one-out analysis (r = 0.84-0.95, all p < 0.02). '
+        'The Prism Forest Plot visually revealed structural heterogeneity invisible in standard forest plots.')
     bold_then_normal(doc, 'Conclusions: ',
-        'LINKO provides a novel, computable diagnostic framework for assessing whether endpoint variables carry equivalent '
-        'informational weight across studies in a meta-analysis. The Prism Forest Plot enables immediate visual assessment '
-        'of structural heterogeneity. ICR discrepancy should be reported alongside '
-        'standard heterogeneity measures (I-squared, tau-squared) to improve transparency in evidence synthesis.')
+        'LINKO provides a computable diagnostic framework for assessing structural comparability of studies in '
+        'a meta-analysis. We recommend reporting ICR discrepancy alongside I-squared and tau-squared to improve '
+        'transparency in evidence synthesis.')
     bold_then_normal(doc, 'Keywords: ',
-        'LINKO, meta-analysis, heterogeneity, information contribution ratio, Prism Forest Plot, '
-        'randomized controlled trial, evidence synthesis, principal component analysis, individual patient data')
+        'meta-analysis, heterogeneity, information contribution ratio, evidence synthesis, principal component '
+        'analysis, individual patient data, forest plot')
+    bold_then_normal(doc, 'Research Synthesis Keywords: ',
+        'meta-analysis heterogeneity diagnostics; structural heterogeneity; individual participant data synthesis; '
+        'novel visualization methods; simulation study')
     doc.add_page_break()
 
-    # Background
-    heading(doc, 'Background', 1)
+    # Introduction (RSM uses Introduction, not Background)
+    heading(doc, 'Introduction', 1)
     para(doc, 'Randomized controlled trials (RCTs) are the gold standard for evaluating treatment efficacy. '
         'Each RCT collects comprehensive patient-level data: demographic variables, baseline laboratory values, '
         'comorbidities, concomitant medications, and multiple outcome measures. A typical RCT may record '
@@ -239,7 +242,7 @@ def build_english():
     para(doc, 'We also compute the coefficient of variation of ICR (ICR_CV) as a complementary measure.')
 
     heading(doc, 'Simulation study design (ADEMP framework)', 2)
-    para(doc, 'We report the simulation study following the ADEMP framework [2,3] for transparent reporting '
+    para(doc, 'We report the simulation study following the ADEMP framework [3,4] for transparent reporting '
         'of simulation studies evaluating statistical methods.')
     para(doc, '')
     bold_then_normal(doc, 'Aims: ',
@@ -264,7 +267,7 @@ def build_english():
         'random-effects meta-analysis. Secondary: pooled effect, tau-squared, correlation between ICRD and I-squared.')
     para(doc, '')
     bold_then_normal(doc, 'Methods: ',
-        'DerSimonian-Laird random-effects meta-analysis [4]. For Scenario C, sequential (cumulative) meta-analysis.')
+        'DerSimonian-Laird random-effects meta-analysis [5]. For Scenario C, sequential (cumulative) meta-analysis.')
     para(doc, '')
     bold_then_normal(doc, 'Performance measures: ',
         'Mean I-squared (SD) across 100 iterations, mean ICRD, Pearson correlation between ICRD and I-squared, '
@@ -274,15 +277,15 @@ def build_english():
     para(doc, 'We selected two well-known meta-analysis domains:')
     para(doc, '')
     bold_then_normal(doc, 'Statin therapy for cardiovascular prevention: ',
-        'Five landmark RCTs (4S, WOSCOPS, CARE, LIPID, AFCAPS/TexCAPS) [5-9] with consistent mortality benefit. '
+        'Five landmark RCTs (4S, WOSCOPS, CARE, LIPID, AFCAPS/TexCAPS) [6-10] with consistent mortality benefit. '
         'Similar variable sets (D = 10-11).')
     para(doc, '')
     bold_then_normal(doc, 'Intensive glucose control in type 2 diabetes: ',
-        'Four major RCTs (UKPDS 33, ACCORD, ADVANCE, VADT) [10-13] where heterogeneity emerged. '
+        'Four major RCTs (UKPDS 33, ACCORD, ADVANCE, VADT) [11-14] where heterogeneity emerged. '
         'Different variable counts (D = 8-13).')
 
     heading(doc, 'PCA-based ICR validation (individual patient data)', 2)
-    para(doc, 'We used the International Stroke Trial (IST) dataset [14,15], comprising 19,435 patients '
+    para(doc, 'We used the International Stroke Trial (IST) dataset [15,16], comprising 19,435 patients '
         'across 36 countries. We encoded 25 analysis variables and treated the 8 largest country cohorts '
         '(UK, Italy, Switzerland, Poland, Netherlands, Sweden, Australia, Argentina; n = 545-5,787) as '
         'independent "sub-studies." Leave-one-out sensitivity analysis assessed robustness by iteratively '
@@ -439,8 +442,8 @@ def build_english():
 
     heading(doc, 'Comparison with existing literature', 2)
     para(doc, 'Standard sources of meta-analysis heterogeneity include clinical diversity, methodological diversity, '
-        'and statistical heterogeneity [1]. LINKO introduces a fourth source: structural diversity '
-        'in data dimensionality. This has parallels in high-dimensional statistics [16] but has not previously been '
+        'and statistical heterogeneity [2]. LINKO introduces a fourth source: structural diversity '
+        'in data dimensionality. This has parallels in high-dimensional statistics [17] but has not previously been '
         'applied to meta-analysis. The Prism Forest Plot extends the growing family of enhanced forest plots '
         '(e.g., rain forest plots, contour-enhanced funnel plots) by adding the ICR dimension.')
 
@@ -488,15 +491,18 @@ def build_english():
     para(doc, 'Not applicable. This study uses simulation data and a publicly available, de-identified dataset (IST).')
     heading(doc, 'Consent for publication', 2)
     para(doc, 'Not applicable.')
-    heading(doc, 'Availability of data and materials', 2)
-    para(doc, 'The IST dataset is publicly available from the University of Edinburgh. '
-        'All code: https://github.com/bougtoir/wip/tree/devin/1774353301-icr-paper/icr_paper')
-    heading(doc, 'Competing interests', 2)
+    heading(doc, 'Data Availability Statement', 2)
+    para(doc, 'The IST dataset is publicly available from the University of Edinburgh '
+        '(https://datashare.ed.ac.uk/handle/10283/128). '
+        'All analysis code is available at: https://github.com/bougtoir/wip/tree/devin/1774353301-icr-paper/icr_paper')
+    heading(doc, 'Competing Interests', 2)
     para(doc, 'The authors declare no competing interests.')
     heading(doc, 'Funding', 2)
     para(doc, '[To be completed]')
-    heading(doc, 'Authors\' contributions', 2)
-    para(doc, '[To be completed]')
+    heading(doc, 'Authors\' Contributions (CRediT Taxonomy)', 2)
+    para(doc, '[To be completed. Example: Conceptualization: T.O.; Methodology: T.O.; '
+        'Software: T.O.; Formal analysis: T.O.; Writing - original draft: T.O.; '
+        'Writing - review & editing: T.O.]')
     heading(doc, 'Acknowledgements', 2)
     para(doc, '[To be completed]')
     doc.add_page_break()
@@ -505,22 +511,25 @@ def build_english():
     heading(doc, 'References', 1)
     refs = [
         '1. Higgins JPT, Thompson SG, Deeks JJ, Altman DG. Measuring inconsistency in meta-analyses. BMJ. 2003;327(7414):557-560.',
-        '2. Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Stat Med. 2019;38(11):2074-2102.',
-        '3. Siepe BS, Bartos F, Morris TP, et al. Simulation studies for methodological research in psychology. Psychol Methods. 2024.',
-        '4. DerSimonian R, Laird N. Meta-analysis in clinical trials. Control Clin Trials. 1986;7(3):177-188.',
-        '5. Scandinavian Simvastatin Survival Study Group. Randomised trial of cholesterol lowering in 4444 patients (4S). Lancet. 1994;344:1383-1389.',
-        '6. Shepherd J, et al. Prevention of coronary heart disease with pravastatin (WOSCOPS). N Engl J Med. 1995;333:1301-1307.',
-        '7. Sacks FM, et al. Effect of pravastatin on coronary events after MI (CARE). N Engl J Med. 1996;335:1001-1009.',
-        '8. LIPID Study Group. Prevention of cardiovascular events with pravastatin (LIPID). N Engl J Med. 1998;339:1349-1357.',
-        '9. Downs JR, et al. Primary prevention of acute coronary events with lovastatin (AFCAPS/TexCAPS). JAMA. 1998;279:1615-1622.',
-        '10. UKPDS Group. Intensive blood-glucose control (UKPDS 33). Lancet. 1998;352:837-853.',
-        '11. ACCORD Study Group. Effects of intensive glucose lowering in type 2 diabetes. N Engl J Med. 2008;358:2545-2559.',
-        '12. ADVANCE Collaborative Group. Intensive blood glucose control (ADVANCE). N Engl J Med. 2008;358:2560-2572.',
-        '13. Duckworth W, et al. Glucose control and vascular complications in veterans (VADT). N Engl J Med. 2009;360:129-139.',
-        '14. International Stroke Trial Collaborative Group. The IST. Lancet. 1997;349:1569-1581.',
-        '15. Sandercock PAG, et al. The IST database. Trials. 2011;12:101.',
-        '16. Donoho DL. High-dimensional data analysis: curses and blessings of dimensionality. AMS Math Challenges Lecture. 2000:1-32.',
-        '17. Riley RD, Lambert PC, Abo-Zaid G. Meta-analysis of individual participant data. BMJ. 2010;340:c221.',
+        '2. Higgins JPT, Thomas J, Chandler J, et al. Cochrane Handbook for Systematic Reviews of Interventions. Version 6.3. Cochrane; 2022.',
+        '3. Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Stat Med. 2019;38(11):2074-2102.',
+        '4. Siepe BS, Bartos F, Morris TP, et al. Simulation studies for methodological research in psychology. Psychol Methods. 2024.',
+        '5. DerSimonian R, Laird N. Meta-analysis in clinical trials. Control Clin Trials. 1986;7(3):177-188.',
+        '6. Scandinavian Simvastatin Survival Study Group. Randomised trial of cholesterol lowering in 4444 patients (4S). Lancet. 1994;344:1383-1389.',
+        '7. Shepherd J, et al. Prevention of coronary heart disease with pravastatin (WOSCOPS). N Engl J Med. 1995;333:1301-1307.',
+        '8. Sacks FM, et al. Effect of pravastatin on coronary events after MI (CARE). N Engl J Med. 1996;335:1001-1009.',
+        '9. LIPID Study Group. Prevention of cardiovascular events with pravastatin (LIPID). N Engl J Med. 1998;339:1349-1357.',
+        '10. Downs JR, et al. Primary prevention of acute coronary events with lovastatin (AFCAPS/TexCAPS). JAMA. 1998;279:1615-1622.',
+        '11. UKPDS Group. Intensive blood-glucose control (UKPDS 33). Lancet. 1998;352:837-853.',
+        '12. ACCORD Study Group. Effects of intensive glucose lowering in type 2 diabetes. N Engl J Med. 2008;358:2545-2559.',
+        '13. ADVANCE Collaborative Group. Intensive blood glucose control (ADVANCE). N Engl J Med. 2008;358:2560-2572.',
+        '14. Duckworth W, et al. Glucose control and vascular complications in veterans (VADT). N Engl J Med. 2009;360:129-139.',
+        '15. International Stroke Trial Collaborative Group. The IST. Lancet. 1997;349:1569-1581.',
+        '16. Sandercock PAG, et al. The IST database. Trials. 2011;12:101.',
+        '17. Donoho DL. High-dimensional data analysis: curses and blessings of dimensionality. AMS Math Challenges Lecture. 2000:1-32.',
+        '18. Schild AHE, Voracek M. Less is less: a systematic review of graph use in meta-analyses. Res Synth Methods. 2013;4(3):209-219.',
+        '19. Peters JL, Sutton AJ, Jones DR, Abrams KR, Rushton L. Contour-enhanced meta-analysis funnel plots. J Clin Epidemiol. 2008;61(10):991-996.',
+        '20. Doi SAR, Barendregt JJ, Khan S, et al. Advances in the meta-analysis of heterogeneous clinical trials I. Contemp Clin Trials. 2015;45:130-138.',
     ]
     for ref in refs:
         para(doc, ref)
@@ -550,46 +559,54 @@ def build_japanese():
     r.bold = True
     r.font.name = 'Times New Roman'
     para(doc, '')
-    para(doc, '[著者名]', align=WD_ALIGN_PARAGRAPH.CENTER)
+    para(doc, 'Running head: LINKO: Information Contribution Ratio for Meta-Analysis Validity', italic=True, align=WD_ALIGN_PARAGRAPH.CENTER)
+    para(doc, '')
+    para(doc, '大西達輝 [ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX]', align=WD_ALIGN_PARAGRAPH.CENTER)
     para(doc, '[所属]', align=WD_ALIGN_PARAGRAPH.CENTER)
     para(doc, '')
-    para(doc, '責任著者: [氏名, メールアドレス]', align=WD_ALIGN_PARAGRAPH.CENTER)
+    para(doc, '責任著者: 大西達輝, [メールアドレス], ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX', align=WD_ALIGN_PARAGRAPH.CENTER)
     doc.add_page_break()
 
-    # Abstract
+    # Abstract (RSM structured format)
     heading(doc, '抄録', 1)
+    bold_then_normal(doc, '目的: ',
+        'LINKO (Latent Information Normalization for Key Outcomes) フレームワークを導入し、'
+        'メタ解析に参入する各研究間でエンドポイント変数が同等の情報的重みを持つかを評価する'
+        '新しい診断指標としてInformation Contribution Ratio (ICR)を提案する。')
     bold_then_normal(doc, '背景: ',
-        'メタ解析は複数のランダム化比較試験(RCT)のエンドポイントレベルの結果をプールして合成エビデンスを生成する。'
-        'しかし、各RCTは異なる数・種類の変数を収集しており、エンドポイントが総情報空間に占める割合は研究間で大きく異なりうる。'
-        'この構造的異質性を定量化する既存のフレームワークは存在しない。')
+        'メタ解析は複数のランダム化比較試験(RCT)のエンドポイントレベルの効果量をプールする。'
+        'しかし、各RCTは異なる数の変数を収集しており、エンドポイントが総情報空間に占める割合は'
+        '研究間で大きく異なりうる。この構造的異質性はI²やτ²などの既存の指標では捉えられない。')
     bold_then_normal(doc, '方法: ',
-        'LINKO (Latent Information Normalization for Key Outcomes) フレームワークを提案する。'
-        'エンドポイントに帰属する総データ情報の割合として定義されるInformation Contribution Ratio (ICR)を中心に、'
-        '2つのアプローチを開発した: (1) Table 1要約統計量から計算可能な分散ベースアプローチ(ICR_v)、'
-        '(2) 個票データを用いるPCAベースアプローチ(ICR_pca)。'
-        'また、ICRを色とサイズの次元でエンコードする新しい可視化手法Prism Forest Plotを導入した。'
-        'モンテカルロシミュレーション(100反復×3シナリオ)、実社会メタ解析2領域(スタチン療法、強化血糖コントロール)、'
-        'International Stroke Trial (IST)データセット(19,435名、25変数、8か国)でのPCA検証、'
-        '早期収束分析(500反復)により検証した。Leave-one-out感度分析で頑健性を評価した。'
-        'シミュレーション研究はADEMPフレームワークに準拠して報告する。')
+        'ICRを研究の総データ情報のうちエンドポイントに帰属する割合として定義する。'
+        '2つの相補的アプローチを開発した: (1) Table 1要約統計量から計算可能な分散ベースアプローチ(ICR_std = d/D)、'
+        '(2) 個票データ(IPD)を用いるPCAベースアプローチ(ICR_pca)。'
+        'また、ICRを色と点サイズの次元でエンコードする新しい可視化手法Prism Forest Plotを導入した。'
+        'モンテカルロシミュレーション(100反復×3シナリオ、ADEMPフレームワークに準拠して報告)、'
+        '実社会メタ解析2領域(スタチン療法、強化血糖コントロール)の分析、'
+        'International Stroke Trial (IST)データセット(19,435名、25変数、8か国サブスタディ)でのPCA検証、'
+        'Leave-one-out感度分析、早期収束シミュレーション(500反復)により検証した。')
     bold_then_normal(doc, '結果: ',
         'シミュレーションでは、異質なICRを持つ研究群は均一ICR群より高い平均I²(11.7% vs 11.0%)を示した。'
-        '実データでは、安定したスタチンメタ解析はICRD = 0.009(I² = 0.0%)、異質な血糖コントロールはICRD = 0.048(I² = 17.0%)であった。'
-        'Prism Forest Plotはこの違いを視覚的に明示した。'
-        'IST PCA解析では、ICR_pca(loading法)は0.046-0.180(CV = 0.36)と大きく変動し、'
+        '実データでは、安定したメタ解析(スタチン療法)はICRD = 0.009(I² = 0.0%)と低く、'
+        '異質なメタ解析(血糖コントロール)はICRD = 0.048(I² = 17.0%)と高かった。'
+        'IST国別サブスタディ間でPCAベースICRは4倍の変動を示し'
+        '(ICR_pca loading: 0.046-0.180, CV = 0.36)、'
         '回帰法ICR_pcaは14日死亡率と強く相関した(r = 0.90, p = 0.003)。'
         'Leave-one-out分析で頑健性を確認(r = 0.84-0.95, 全てp < 0.02)。'
-        '早期収束シミュレーションでは、LINKO最適化戦略がI² < 25%到達までの平均研究数が最少であった(3.14 vs 3.19-3.20)。')
+        'Prism Forest Plotは標準フォレストプロットでは見えない構造的異質性を視覚的に明示した。')
     bold_then_normal(doc, '結論: ',
-        'LINKOフレームワークは、メタ解析においてエンドポイント変数が研究間で同等の情報的重みを持つかを評価する'
-        '新しい計算可能な診断ツールを提供する。Prism Forest Plotにより構造的異質性の即座の視覚的評価が可能となる。'
-        'ICR discrepancyはI²、τ²とともに報告され、エビデンス統合の透明性向上に寄与すべきである。')
+        'LINKOはメタ解析における研究の構造的比較可能性を評価する計算可能な診断フレームワークを提供する。'
+        'ICR discrepancyをI²およびτ²とともに報告し、エビデンス統合の透明性向上に寄与することを推奨する。')
     bold_then_normal(doc, 'キーワード: ',
-        'LINKO, メタ解析, 異質性, 情報寄与比, Prism Forest Plot, ランダム化比較試験, エビデンス統合, 主成分分析, 個票データ')
+        'メタ解析, 異質性, 情報寄与比, エビデンス統合, 主成分分析, 個票データ, フォレストプロット')
+    bold_then_normal(doc, 'Research Synthesis Keywords: ',
+        'meta-analysis heterogeneity diagnostics; structural heterogeneity; individual participant data synthesis; '
+        'novel visualization methods; simulation study')
     doc.add_page_break()
 
-    # Background
-    heading(doc, '背景', 1)
+    # Introduction (RSM uses Introduction, not Background)
+    heading(doc, '序論', 1)
     para(doc, 'ランダム化比較試験(RCT)は治療効果評価のゴールドスタンダードである。'
         '各RCTは人口統計変数、ベースライン検査値、併存疾患、併用薬、複数のアウトカム指標など、'
         '包括的な患者レベルデータを収集する。典型的なRCTは参加者あたり10〜100以上の変数を記録する。'
@@ -633,7 +650,7 @@ def build_japanese():
         'ICR_pca_reg = SUM(beta_k^2 * lambda_k) / (SUM(lambda_k) + Var(Y))')
 
     heading(doc, 'シミュレーション研究設計 (ADEMPフレームワーク)', 2)
-    para(doc, 'ADEMPフレームワーク[2,3]に準拠してシミュレーション研究を報告する。')
+    para(doc, 'ADEMPフレームワーク[3,4]に準拠してシミュレーション研究を報告する。')
     bold_then_normal(doc, '目的: ', 'ICR異質性がI²に影響するか評価する。')
     bold_then_normal(doc, 'データ生成機構: ', 'D次元多変量正規データ、治療効果delta = 0.5、spillover = 0.3、n = 200/群。')
     para(doc, 'シナリオA (均一ICR): D = 20の10研究。')
@@ -641,11 +658,11 @@ def build_japanese():
     para(doc, 'シナリオC (逐次): 均一5研究 + 異質10研究。')
 
     heading(doc, '実社会データ分析', 2)
-    bold_then_normal(doc, 'スタチン療法: ', '5つのRCT (4S, WOSCOPS, CARE, LIPID, AFCAPS) [5-9]。')
-    bold_then_normal(doc, '強化血糖コントロール: ', '4つのRCT (UKPDS 33, ACCORD, ADVANCE, VADT) [10-13]。')
+    bold_then_normal(doc, 'スタチン療法: ', '5つのRCT (4S, WOSCOPS, CARE, LIPID, AFCAPS) [6-10]。')
+    bold_then_normal(doc, '強化血糖コントロール: ', '4つのRCT (UKPDS 33, ACCORD, ADVANCE, VADT) [11-14]。')
 
     heading(doc, 'PCA検証 (IST個票データ)', 2)
-    para(doc, 'IST [14,15]の19,435名、25変数、8か国コホートをサブスタディとして使用。'
+    para(doc, 'IST [15,16]の19,435名、25変数、8か国コホートをサブスタディとして使用。'
         'Leave-one-out感度分析で頑健性を評価。')
 
     heading(doc, 'LINKO Prism Forest Plot', 2)
@@ -769,15 +786,17 @@ def build_japanese():
     para(doc, '該当なし。シミュレーションデータと公開匿名化データセット(IST)を使用。')
     heading(doc, '出版同意', 2)
     para(doc, '該当なし。')
-    heading(doc, 'データと資料の利用可能性', 2)
-    para(doc, 'ISTデータセットはエディンバラ大学から公開されている。'
-        'コード: https://github.com/bougtoir/wip/tree/devin/1774353301-icr-paper/icr_paper')
+    heading(doc, 'データ利用可能性声明', 2)
+    para(doc, 'ISTデータセットはエディンバラ大学から公開されている'
+        '(https://datashare.ed.ac.uk/handle/10283/128)。'
+        '全ての分析コードは以下で公開: https://github.com/bougtoir/wip/tree/devin/1774353301-icr-paper/icr_paper')
     heading(doc, '利益相反', 2)
     para(doc, '著者らは利益相反がないことを宣言する。')
     heading(doc, '資金', 2)
     para(doc, '[記入予定]')
-    heading(doc, '著者の貢献', 2)
-    para(doc, '[記入予定]')
+    heading(doc, '著者の貢献 (CRediT Taxonomy)', 2)
+    para(doc, '[記入予定。例: 概念化: T.O.; 方法論: T.O.; ソフトウェア: T.O.; '
+        '形式分析: T.O.; 執筆 - 原稿: T.O.; 執筆 - 査読・編集: T.O.]')
     heading(doc, '謝辞', 2)
     para(doc, '[記入予定]')
     doc.add_page_break()
@@ -786,22 +805,25 @@ def build_japanese():
     heading(doc, '参考文献', 1)
     refs = [
         '1. Higgins JPT, Thompson SG, Deeks JJ, Altman DG. BMJ. 2003;327(7414):557-560.',
-        '2. Morris TP, White IR, Crowther MJ. Stat Med. 2019;38(11):2074-2102.',
-        '3. Siepe BS, et al. Psychol Methods. 2024.',
-        '4. DerSimonian R, Laird N. Control Clin Trials. 1986;7(3):177-188.',
-        '5. 4S Study Group. Lancet. 1994;344:1383-1389.',
-        '6. Shepherd J, et al. N Engl J Med. 1995;333:1301-1307.',
-        '7. Sacks FM, et al. N Engl J Med. 1996;335:1001-1009.',
-        '8. LIPID Study Group. N Engl J Med. 1998;339:1349-1357.',
-        '9. Downs JR, et al. JAMA. 1998;279:1615-1622.',
-        '10. UKPDS Group. Lancet. 1998;352:837-853.',
-        '11. ACCORD. N Engl J Med. 2008;358:2545-2559.',
-        '12. ADVANCE. N Engl J Med. 2008;358:2560-2572.',
-        '13. Duckworth W, et al. N Engl J Med. 2009;360:129-139.',
-        '14. IST Collaborative Group. Lancet. 1997;349:1569-1581.',
-        '15. Sandercock PAG, et al. Trials. 2011;12:101.',
-        '16. Donoho DL. AMS Math Challenges Lecture. 2000:1-32.',
-        '17. Riley RD, et al. BMJ. 2010;340:c221.',
+        '2. Higgins JPT, Thomas J, Chandler J, et al. Cochrane Handbook for Systematic Reviews of Interventions. Version 6.3. Cochrane; 2022.',
+        '3. Morris TP, White IR, Crowther MJ. Stat Med. 2019;38(11):2074-2102.',
+        '4. Siepe BS, et al. Psychol Methods. 2024.',
+        '5. DerSimonian R, Laird N. Control Clin Trials. 1986;7(3):177-188.',
+        '6. 4S Study Group. Lancet. 1994;344:1383-1389.',
+        '7. Shepherd J, et al. N Engl J Med. 1995;333:1301-1307.',
+        '8. Sacks FM, et al. N Engl J Med. 1996;335:1001-1009.',
+        '9. LIPID Study Group. N Engl J Med. 1998;339:1349-1357.',
+        '10. Downs JR, et al. JAMA. 1998;279:1615-1622.',
+        '11. UKPDS Group. Lancet. 1998;352:837-853.',
+        '12. ACCORD. N Engl J Med. 2008;358:2545-2559.',
+        '13. ADVANCE. N Engl J Med. 2008;358:2560-2572.',
+        '14. Duckworth W, et al. N Engl J Med. 2009;360:129-139.',
+        '15. IST Collaborative Group. Lancet. 1997;349:1569-1581.',
+        '16. Sandercock PAG, et al. Trials. 2011;12:101.',
+        '17. Donoho DL. AMS Math Challenges Lecture. 2000:1-32.',
+        '18. Schild AHE, Voracek M. Res Synth Methods. 2013;4(3):209-219.',
+        '19. Peters JL, et al. J Clin Epidemiol. 2008;61(10):991-996.',
+        '20. Doi SAR, et al. Contemp Clin Trials. 2015;45:130-138.',
     ]
     for ref in refs:
         para(doc, ref)
