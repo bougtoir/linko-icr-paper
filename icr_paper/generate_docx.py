@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Research Synthesis Methods-compliant DOCX files (English + Japanese)."""
+"""Generate BMC Medical Research Methodology-compliant DOCX files (English + Japanese)."""
 
 import os
 import sys
@@ -113,24 +113,22 @@ def build_english():
     r.bold = True
     r.font.name = 'Times New Roman'
     para(doc, '')
-    para(doc, 'Running head: LINKO: Information Contribution Ratio for Meta-Analysis Validity', italic=True, align=WD_ALIGN_PARAGRAPH.CENTER)
     para(doc, '')
-    para(doc, 'Tatsuki Onishi [ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX]', align=WD_ALIGN_PARAGRAPH.CENTER)
+    para(doc, 'Tatsuki Onishi', align=WD_ALIGN_PARAGRAPH.CENTER)
     para(doc, '[Affiliations]', align=WD_ALIGN_PARAGRAPH.CENTER)
     para(doc, '')
-    para(doc, 'Corresponding author: Tatsuki Onishi, [Email], ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX', align=WD_ALIGN_PARAGRAPH.CENTER)
+    para(doc, 'Corresponding author: Tatsuki Onishi, [Email]', align=WD_ALIGN_PARAGRAPH.CENTER)
     doc.add_page_break()
 
-    # Abstract (RSM structured format, <=250 words)
+    # Abstract (BMC MRM structured format: Background/Methods/Results/Conclusions)
     heading(doc, 'Abstract', 1)
-    bold_then_normal(doc, 'Aim(s): ',
-        'We introduce the LINKO (Latent Information Normalization for Key Outcomes) framework, proposing '
-        'the Information Contribution Ratio (ICR) as a diagnostic measure for assessing whether endpoint '
-        'variables carry equivalent informational weight across studies in a meta-analysis.')
     bold_then_normal(doc, 'Background: ',
         'Meta-analysis pools effect sizes from multiple RCTs, but each RCT collects different numbers of '
         'variables, meaning the endpoint may represent vastly different proportions of the total information '
-        'space. This structural heterogeneity is not captured by I-squared or tau-squared.')
+        'space. This structural heterogeneity is not captured by I-squared or tau-squared. '
+        'We introduce the LINKO (Latent Information Normalization for Key Outcomes) framework, proposing '
+        'the Information Contribution Ratio (ICR) as a diagnostic measure for assessing whether endpoint '
+        'variables carry equivalent informational weight across studies in a meta-analysis.')
     bold_then_normal(doc, 'Methods: ',
         'We define ICR as the proportion of a study\'s total data information attributable to its endpoint. '
         'Two approaches are developed: (1) a variance-based approach (ICR_std = d/D) computable from published '
@@ -150,38 +148,10 @@ def build_english():
     bold_then_normal(doc, 'Keywords: ',
         'meta-analysis, heterogeneity, information contribution ratio, evidence synthesis, principal component '
         'analysis, individual patient data, forest plot')
-    bold_then_normal(doc, 'Research Synthesis Keywords: ',
-        'meta-analysis heterogeneity diagnostics; structural heterogeneity; individual participant data synthesis; '
-        'novel visualization methods; simulation study')
     doc.add_page_break()
 
-    # What is already known / What is new / Potential impact (RSM required)
-    heading(doc, 'What is already known', 2)
-    para(doc, '\u2022 Meta-analysis heterogeneity is assessed using I-squared and tau-squared, which capture '
-        'statistical variability across studies.')
-    para(doc, '\u2022 Sources of heterogeneity are typically categorized as clinical, methodological, or statistical diversity.')
-    para(doc, '\u2022 Differences in the number and type of variables collected across RCTs are acknowledged but not '
-        'formally quantified in current meta-analytic practice.')
-    para(doc, '')
-    heading(doc, 'What is new', 2)
-    para(doc, '\u2022 We propose the Information Contribution Ratio (ICR), a measure of how much of a study\'s total '
-        'data information is captured by its endpoint, computable from published Table 1 summary statistics.')
-    para(doc, '\u2022 We introduce a PCA-based ICR approach for individual patient data that captures the full '
-        'covariance structure of the endpoint within each study.')
-    para(doc, '\u2022 The Prism Forest Plot extends the standard forest plot by encoding ICR as color and point-size '
-        'dimensions, making structural heterogeneity immediately visible.')
-    para(doc, '')
-    heading(doc, 'Potential impact for RSM readers outside the authors\' field', 2)
-    para(doc, '\u2022 Meta-analysts across all disciplines can retrospectively compute ICR for any published RCT '
-        'using Table 1 data, without requiring individual patient data or additional statistical software.')
-    para(doc, '\u2022 The Prism Forest Plot offers an intuitive visual diagnostic that can be adopted in any systematic '
-        'review to reveal whether studies being pooled have comparable informational structures.')
-    para(doc, '\u2022 ICR discrepancy provides a new criterion for assessing study comparability in evidence synthesis '
-        'guidelines, potentially informing GRADE certainty assessments and Cochrane review protocols.')
-    doc.add_page_break()
-
-    # Introduction (RSM uses Introduction, not Background)
-    heading(doc, 'Introduction', 1)
+    # Background (BMC MRM standard section name)
+    heading(doc, 'Background', 1)
     para(doc, 'Randomized controlled trials (RCTs) are the gold standard for evaluating treatment efficacy. '
         'Each RCT collects comprehensive patient-level data: demographic variables, baseline laboratory values, '
         'comorbidities, concomitant medications, and multiple outcome measures. A typical RCT may record '
@@ -509,18 +479,16 @@ def build_english():
     para(doc, 'Not applicable. This study uses simulation data and a publicly available, de-identified dataset (IST).')
     heading(doc, 'Consent for publication', 2)
     para(doc, 'Not applicable.')
-    heading(doc, 'Data Availability Statement', 2)
+    heading(doc, 'Availability of data and materials', 2)
     para(doc, 'The IST dataset is publicly available from the University of Edinburgh '
         '(https://datashare.ed.ac.uk/handle/10283/128). '
         'All analysis code is available at: https://github.com/bougtoir/wip/tree/devin/1774353301-icr-paper/icr_paper')
-    heading(doc, 'Competing Interests', 2)
-    para(doc, 'The authors declare no competing interests.')
+    heading(doc, 'Competing interests', 2)
+    para(doc, 'The authors declare that they have no competing interests.')
     heading(doc, 'Funding', 2)
     para(doc, '[To be completed]')
-    heading(doc, 'Authors\' Contributions (CRediT Taxonomy)', 2)
-    para(doc, '[To be completed. Example: Conceptualization: T.O.; Methodology: T.O.; '
-        'Software: T.O.; Formal analysis: T.O.; Writing - original draft: T.O.; '
-        'Writing - review & editing: T.O.]')
+    heading(doc, 'Authors\' contributions', 2)
+    para(doc, '[To be completed]')
     heading(doc, 'Acknowledgements', 2)
     para(doc, '[To be completed]')
     doc.add_page_break()
@@ -577,24 +545,22 @@ def build_japanese():
     r.bold = True
     r.font.name = 'Times New Roman'
     para(doc, '')
-    para(doc, 'Running head: LINKO: Information Contribution Ratio for Meta-Analysis Validity', italic=True, align=WD_ALIGN_PARAGRAPH.CENTER)
     para(doc, '')
-    para(doc, '大西達輝 [ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX]', align=WD_ALIGN_PARAGRAPH.CENTER)
+    para(doc, '大西達輝', align=WD_ALIGN_PARAGRAPH.CENTER)
     para(doc, '[所属]', align=WD_ALIGN_PARAGRAPH.CENTER)
     para(doc, '')
-    para(doc, '責任著者: 大西達輝, [メールアドレス], ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX', align=WD_ALIGN_PARAGRAPH.CENTER)
+    para(doc, '責任著者: 大西達輝, [メールアドレス]', align=WD_ALIGN_PARAGRAPH.CENTER)
     doc.add_page_break()
 
-    # Abstract (RSM structured format, <=250 words)
+    # Abstract (BMC MRM structured format: Background/Methods/Results/Conclusions)
     heading(doc, '抄録', 1)
-    bold_then_normal(doc, '目的: ',
-        'LINKO (Latent Information Normalization for Key Outcomes) フレームワークを導入し、'
-        'メタ解析における各研究間でエンドポイント変数が同等の情報的重みを持つかを評価する'
-        '診断指標としてInformation Contribution Ratio (ICR)を提案する。')
     bold_then_normal(doc, '背景: ',
         'メタ解析は複数のRCTの効果量をプールするが、各RCTは異なる数の変数を収集しており、'
         'エンドポイントが総情報空間に占める割合は研究間で大きく異なりうる。'
-        'この構造的異質性はI²やτ²では捉えられない。')
+        'この構造的異質性はI²やτ²では捉えられない。'
+        'LINKO (Latent Information Normalization for Key Outcomes) フレームワークを導入し、'
+        'メタ解析における各研究間でエンドポイント変数が同等の情報的重みを持つかを評価する'
+        '診断指標としてInformation Contribution Ratio (ICR)を提案する。')
     bold_then_normal(doc, '方法: ',
         'ICRを研究の総データ情報のうちエンドポイントに帰属する割合として定義する。'
         '2つのアプローチを開発: (1) Table 1統計量から計算可能な分散ベース(ICR_std = d/D)、'
@@ -614,34 +580,10 @@ def build_japanese():
         'ICR discrepancyをI²・τ²とともに報告することを推奨する。')
     bold_then_normal(doc, 'キーワード: ',
         'メタ解析, 異質性, 情報寄与比, エビデンス統合, 主成分分析, 個票データ, フォレストプロット')
-    bold_then_normal(doc, 'Research Synthesis Keywords: ',
-        'meta-analysis heterogeneity diagnostics; structural heterogeneity; individual participant data synthesis; '
-        'novel visualization methods; simulation study')
     doc.add_page_break()
 
-    # What is already known / What is new / Potential impact (RSM required)
-    heading(doc, '既知の知見 (What is already known)', 2)
-    para(doc, '\u2022 メタ解析の異質性はI²およびτ²で評価され、研究間の統計的変動を捉える。')
-    para(doc, '\u2022 異質性の源泉は臨床的、方法論的、統計的多様性に分類される。')
-    para(doc, '\u2022 RCT間で収集される変数の数や種類の違いは認識されているが、現行のメタ解析では正式に定量化されていない。')
-    para(doc, '')
-    heading(doc, '新規性 (What is new)', 2)
-    para(doc, '\u2022 Information Contribution Ratio (ICR)を提案: 研究の総データ情報のうちエンドポイントが占める割合を、'
-        'Table 1要約統計量から計算可能。')
-    para(doc, '\u2022 個票データ用のPCAベースICRアプローチを導入: エンドポイントの完全な共分散構造を捉える。')
-    para(doc, '\u2022 Prism Forest Plotにより、ICRを色と点サイズで可視化し、構造的異質性を即座に識別可能。')
-    para(doc, '')
-    heading(doc, 'RSM読者への潜在的影響 (Potential impact for RSM readers outside the authors\' field)', 2)
-    para(doc, '\u2022 全分野のメタ解析研究者が、個票データや追加ソフトウェアなしに、Table 1データのみで'
-        '任意の既刊RCTのICRを遡及的に算出可能。')
-    para(doc, '\u2022 Prism Forest Plotは、プールされる研究の情報構造の比較可能性を'
-        '直感的に評価できる視覚的診断ツールとして、あらゆる系統的レビューに導入可能。')
-    para(doc, '\u2022 ICR discrepancyはエビデンス統合ガイドラインにおける研究比較可能性の新しい基準を提供し、'
-        'GRADEの確実性評価やCochraneレビュープロトコルに情報を提供しうる。')
-    doc.add_page_break()
-
-    # Introduction (RSM uses Introduction, not Background)
-    heading(doc, '序論', 1)
+    # Background (BMC MRM standard section name)
+    heading(doc, '背景', 1)
     para(doc, 'ランダム化比較試験(RCT)は治療効果評価のゴールドスタンダードである。'
         '各RCTは人口統計変数、ベースライン検査値、併存疾患、併用薬、複数のアウトカム指標など、'
         '包括的な患者レベルデータを収集する。典型的なRCTは参加者あたり10〜100以上の変数を記録する。'
@@ -821,17 +763,16 @@ def build_japanese():
     para(doc, '該当なし。シミュレーションデータと公開匿名化データセット(IST)を使用。')
     heading(doc, '出版同意', 2)
     para(doc, '該当なし。')
-    heading(doc, 'データ利用可能性声明', 2)
+    heading(doc, 'データおよび資料の利用可能性', 2)
     para(doc, 'ISTデータセットはエディンバラ大学から公開されている'
         '(https://datashare.ed.ac.uk/handle/10283/128)。'
         '全ての分析コードは以下で公開: https://github.com/bougtoir/wip/tree/devin/1774353301-icr-paper/icr_paper')
     heading(doc, '利益相反', 2)
-    para(doc, '著者らは利益相反がないことを宣言する。')
+    para(doc, '著者らは競合する利益がないことを宣言する。')
     heading(doc, '資金', 2)
     para(doc, '[記入予定]')
-    heading(doc, '著者の貢献 (CRediT Taxonomy)', 2)
-    para(doc, '[記入予定。例: 概念化: T.O.; 方法論: T.O.; ソフトウェア: T.O.; '
-        '形式分析: T.O.; 執筆 - 原稿: T.O.; 執筆 - 査読・編集: T.O.]')
+    heading(doc, '著者の貢献', 2)
+    para(doc, '[記入予定]')
     heading(doc, '謝辞', 2)
     para(doc, '[記入予定]')
     doc.add_page_break()

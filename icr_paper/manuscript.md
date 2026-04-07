@@ -2,27 +2,21 @@
 
 ---
 
-**Running head**: LINKO: Information Contribution Ratio for Meta-Analysis Validity
-
----
-
 ## Title Page
 
 **Title**: LINKO (Latent Information Normalization for Key Outcomes): A Framework for Evaluating the Validity of Meta-Analytic Pooling Across Heterogeneous RCT Data Structures
 
-**Authors**: Tatsuki Onishi [ORCID]
+**Authors**: Tatsuki Onishi
 
 **Affiliations**: [Affiliations]
 
-**Corresponding author**: Tatsuki Onishi, [Email], [ORCID]
+**Corresponding author**: Tatsuki Onishi, [Email]
 
 ---
 
 ## Abstract
 
-**Aim(s)**: We introduce the LINKO (Latent Information Normalization for Key Outcomes) framework, proposing the Information Contribution Ratio (ICR) as a diagnostic measure for assessing whether endpoint variables carry equivalent informational weight across studies in a meta-analysis.
-
-**Background**: Meta-analysis pools effect sizes from multiple RCTs, but each RCT collects different numbers of variables, meaning the endpoint may represent vastly different proportions of the total information space. This structural heterogeneity is not captured by I-squared or tau-squared.
+**Background**: Meta-analysis pools effect sizes from multiple RCTs, but each RCT collects different numbers of variables, meaning the endpoint may represent vastly different proportions of the total information space. This structural heterogeneity is not captured by I-squared or tau-squared. We introduce the LINKO (Latent Information Normalization for Key Outcomes) framework, proposing the Information Contribution Ratio (ICR) as a diagnostic measure for assessing whether endpoint variables carry equivalent informational weight across studies in a meta-analysis.
 
 **Methods**: We define ICR as the proportion of a study's total data information attributable to its endpoint. Two approaches are developed: (1) a variance-based approach (ICR_std = d/D) computable from published Table 1 statistics, and (2) a PCA-based approach (ICR_pca) using individual patient data. We introduce the Prism Forest Plot encoding ICR as color and size dimensions. Validation includes Monte Carlo simulation (ADEMP framework), two real-world domains, PCA validation using the IST dataset (19,435 patients, 8 country sub-studies), and leave-one-out sensitivity analysis.
 
@@ -32,31 +26,9 @@
 
 **Keywords**: meta-analysis, heterogeneity, information contribution ratio, evidence synthesis, principal component analysis, individual patient data, forest plot
 
-**Research Synthesis Keywords**: meta-analysis heterogeneity diagnostics; structural heterogeneity; individual participant data synthesis; novel visualization methods; simulation study
-
 ---
 
-## What is already known
-
-- Meta-analysis heterogeneity is assessed using I-squared and tau-squared, which capture statistical variability across studies.
-- Sources of heterogeneity are typically categorized as clinical, methodological, or statistical diversity.
-- Differences in the number and type of variables collected across RCTs are acknowledged but not formally quantified in current meta-analytic practice.
-
-## What is new
-
-- We propose the Information Contribution Ratio (ICR), a measure of how much of a study's total data information is captured by its endpoint, computable from published Table 1 summary statistics.
-- We introduce a PCA-based ICR approach for individual patient data that captures the full covariance structure of the endpoint within each study.
-- The Prism Forest Plot extends the standard forest plot by encoding ICR as color and point-size dimensions, making structural heterogeneity immediately visible.
-
-## Potential impact for RSM readers outside the authors' field
-
-- Meta-analysts across all disciplines can retrospectively compute ICR for any published RCT using Table 1 data, without requiring individual patient data or additional statistical software.
-- The Prism Forest Plot offers an intuitive visual diagnostic that can be adopted in any systematic review to reveal whether studies being pooled have comparable informational structures.
-- ICR discrepancy provides a new criterion for assessing study comparability in evidence synthesis guidelines, potentially informing GRADE certainty assessments and Cochrane review protocols.
-
----
-
-## 1. Introduction
+## Background
 
 Randomized controlled trials (RCTs) are the gold standard for evaluating treatment efficacy. Each RCT collects comprehensive patient-level data: demographic variables, baseline laboratory values, comorbidities, concomitant medications, and multiple outcome measures. A typical RCT may record 10-100 or more variables per participant. Yet when these studies are synthesized through meta-analysis, the pooling is performed on a single endpoint (or a small number of endpoints), reducing each study's rich dataset to a single effect size estimate.
 
@@ -70,7 +42,7 @@ We hypothesize that when studies contributing to a meta-analysis have similar IC
 
 ---
 
-## 2. Methods
+## Methods
 
 ### 2.1 Mathematical Framework
 
@@ -176,7 +148,7 @@ All analyses were implemented in Python 3.x using NumPy/SciPy, pandas, scikit-le
 
 ---
 
-## 3. Results
+## Results
 
 ### 3.1 Simulation Results
 
@@ -290,7 +262,7 @@ The LINKO optimized strategy achieved the lowest mean studies for I-squared < 25
 
 ---
 
-## 4. Discussion
+## Discussion
 
 ### 4.1 Principal Findings
 
@@ -337,7 +309,7 @@ We recommend the following practical steps for meta-analysts:
 
 ---
 
-## 5. Conclusions
+## Conclusions
 
 We have introduced the LINKO (Latent Information Normalization for Key Outcomes) framework and its Information Contribution Ratio (ICR) as a novel diagnostic measure for assessing meta-analysis validity. The ICR quantifies how much of a study's total information is captured by its endpoint, providing a new perspective on why some meta-analyses show unexpected heterogeneity. Our simulation study demonstrates the theoretical mechanism; our real-world analysis shows consistency with known heterogeneity patterns; and our PCA-based validation using IST individual patient data confirms that ICR_pca captures meaningful variation (r = 0.90, robust in leave-one-out analysis). The Prism Forest Plot enables immediate visual assessment of structural heterogeneity. We recommend that ICR discrepancy and the Prism Forest Plot be reported as supplementary diagnostics in meta-analyses to improve transparency and interpretability of evidence synthesis.
 
@@ -351,7 +323,7 @@ Not applicable. This study uses simulation data and a publicly available, de-ide
 ### Consent for Publication
 Not applicable.
 
-### Data Availability Statement
+### Availability of data and materials
 The IST dataset is publicly available from the University of Edinburgh (https://datashare.ed.ac.uk/handle/10283/128). All analysis code is available at: https://github.com/bougtoir/wip/tree/devin/1774353301-icr-paper/icr_paper
 
 ### Competing Interests
@@ -360,7 +332,7 @@ The authors declare no competing interests.
 ### Funding
 [To be completed]
 
-### Authors' Contributions (CRediT Taxonomy)
+### Authors' contributions
 [To be completed]
 
 ### Acknowledgements
