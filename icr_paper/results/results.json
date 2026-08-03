@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generated_utc": "2026-08-03T07:58:41Z",
-    "git_commit": "6689548cb6f31417b71beecbacb6dcb7f4cfcdc4",
+    "generated_utc": "2026-08-03T08:05:41Z",
+    "git_commit": "9ba7d28ff1d18e6aa8c364554ba1692f0633fd1b",
     "python_version": "3.10.12",
     "numpy_version": "2.2.6",
     "pandas_version": "2.3.3",
-    "runtime_seconds": 276.5,
+    "runtime_seconds": 290.0,
     "data_dir": "data"
   },
   "simulation": {
@@ -541,6 +541,7 @@
   "ist": {
     "summary": {
       "data_path": "data/ist/IST_corrected.csv",
+      "loading_threshold": 0.3,
       "n_patients_raw": 19435,
       "n_patients_complete": 18451,
       "n_countries_total": 36,
@@ -561,7 +562,6 @@
       "corr_loading_mortality": 0.2648099137845664,
       "corr_reg_mortality": 0.8955356463281371
     },
-    "loading_threshold": 0.3,
     "countries": [
       {
         "country": "United Kingdom",
