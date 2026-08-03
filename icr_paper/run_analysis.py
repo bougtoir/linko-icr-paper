@@ -93,6 +93,21 @@ def _json_safe(obj):
     return obj
 
 
+def _relative(obj):
+    """Rewrite absolute paths under the repository as relative ones.
+
+    Keeps results.json identical between machines so that a clean rerun can be
+    compared directly against the committed results.
+    """
+    if isinstance(obj, dict):
+        return {k: _relative(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_relative(v) for v in obj]
+    if isinstance(obj, str) and obj.startswith(str(BASE) + "/"):
+        return obj[len(str(BASE)) + 1 :]
+    return obj
+
+
 def _write_table(df: pd.DataFrame, name: str) -> None:
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     df.to_csv(RESULTS_DIR / name, index=False)
@@ -356,7 +371,7 @@ def main() -> None:
         ),
     }
     with open(RESULTS_DIR / "results.json", "w") as fh:
-        json.dump(payload, fh, indent=2)
+        json.dump(_relative(payload), fh, indent=2)
 
     print(f"Wrote {RESULTS_DIR / 'results.json'} in {payload['metadata']['runtime_seconds']}s")
 
