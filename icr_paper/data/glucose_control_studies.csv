@@ -1,0 +1,5 @@
+study,n_intervention,n_control,effect_size_logrr,effect_var
+UKPDS 33 (1998),2729,1138,-0.06,0.008
+ACCORD (2008),5128,5123,0.22,0.018
+ADVANCE (2008),5571,5569,-0.07,0.01
+VADT (2009),892,899,-0.02,0.045

@@ -19,6 +19,10 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from typing import Optional
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_IST_PATH = BASE_DIR / "data" / "ist" / "IST_corrected.csv"
+DEFAULT_FIGURE_DIR = BASE_DIR / "figures"
+
 
 def load_and_encode_ist(data_path: str) -> tuple[pd.DataFrame, list[str], str]:
     """Load IST data and encode categoricals for PCA.
@@ -103,6 +107,11 @@ def compute_icr_pca_by_country(
     """
     analysis_df = df[all_vars + ["COUNTRY"]].dropna()
     D = len(all_vars)
+    country_names = (
+        pd.read_csv(BASE_DIR / "data" / "ist_country_codes.csv")
+        .set_index("code")["country"]
+        .to_dict()
+    )
 
     if countries is None:
         countries = (
@@ -159,7 +168,8 @@ def compute_icr_pca_by_country(
 
         results.append(
             {
-                "country": country,
+                "country": country_names.get(country, country),
+                "country_code": country,
                 "n": n,
                 "mortality_rate": sub[endpoint_col].mean(),
                 "icr_std": 1.0 / D,
@@ -178,7 +188,7 @@ def generate_ist_pca_figure(
     endpoint_col: str,
     analysis_df: pd.DataFrame,
     threshold: float = 0.3,
-    output_dir: str = "icr_paper/figures",
+    output_dir: str = str(DEFAULT_FIGURE_DIR),
 ) -> str:
     """Generate 4-panel PCA-ICR figure for the IST analysis."""
     D = len(all_vars)
@@ -287,14 +297,14 @@ def generate_ist_pca_figure(
     plt.tight_layout()
     out_path = Path(output_dir) / "fig_pca_ist_analysis.png"
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(str(out_path), dpi=150, bbox_inches="tight")
+    plt.savefig(str(out_path), dpi=600, bbox_inches="tight")
     plt.close()
     return str(out_path)
 
 
 def run_ist_pca_analysis(
-    data_path: str = "icr_paper/data/ist_corrected.csv",
-    output_dir: str = "icr_paper/figures",
+    data_path: str = str(DEFAULT_IST_PATH),
+    output_dir: str = str(DEFAULT_FIGURE_DIR),
 ) -> dict:
     """Run the full IST PCA-based ICR analysis.
 
@@ -311,6 +321,10 @@ def run_ist_pca_analysis(
     )
 
     summary = {
+        "data_path": str(data_path),
+        "n_patients_raw": int(len(df)),
+        "n_patients_complete": int(len(analysis_df)),
+        "n_countries_total": int(df["COUNTRY"].nunique()),
         "n_countries": len(res_df),
         "total_patients": res_df["n"].sum(),
         "n_variables": len(all_vars),
@@ -349,7 +363,7 @@ if __name__ == "__main__":
     result = run_ist_pca_analysis()
     print("\n=== IST PCA-based ICR Analysis Results ===\n")
     print(result["country_results"].to_string(index=False))
-    print(f"\nSummary:")
+    print("\nSummary:")
     for k, v in result["summary"].items():
         print(f"  {k}: {v}")
     print(f"\nFigure: {result['figure_path']}")

@@ -1,0 +1,6 @@
+study,n_intervention,n_control,effect_size_logrr,effect_var
+4S (1994),2221,2223,-0.37,0.012
+WOSCOPS (1995),3302,3293,-0.25,0.035
+CARE (1996),2081,2078,-0.1,0.02
+LIPID (1998),4512,4502,-0.25,0.008
+AFCAPS/TexCAPS (1998),3304,3301,-0.11,0.06

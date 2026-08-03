@@ -1,0 +1,4 @@
+strategy,mean_conclusive,median_conclusive,pct_conclusive_by_5,pct_conclusive_by_10,mean_stable,median_stable
+random,3.942,3.0,81.39999999999999,97.2,3.19,2.0
+matched,3.912,3.0,78.0,97.6,3.204,2.0
+linko,3.998,3.0,77.60000000000001,97.6,3.144,2.0
