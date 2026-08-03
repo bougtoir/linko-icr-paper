@@ -416,7 +416,7 @@ def build_english(res: dict) -> list:
             "When IPD are available, principal component analysis (PCA) on the correlation matrix "
             f"of the standardised variables {_cite('jolliffe')} gives two further estimators. The "
             "loading-based estimator sums the explained-variance ratios of components on which the "
-            f"endpoint has absolute loading at least {num(res['ist']['loading_threshold'], 1)}:",
+            f"endpoint has absolute loading at least {num(res['ist']['summary']['loading_threshold'], 1)}:",
         )
     )
     add(("eq", "ICR_pca_loading = sum_{k in S_E} lambda_k / sum_k lambda_k."))
@@ -471,7 +471,8 @@ def build_english(res: dict) -> list:
             "to variable counting. "
             "Data-generating mechanism: for each study, D correlated standard normal variables "
             "were generated per arm with an exchangeable-like correlation structure, "
-            f"n = {settings['n_subjects_per_study']} participants per arm, a treatment effect of "
+            f"n = {settings['n_subjects_per_study']} participants per study split equally between "
+            "the two arms, a treatment effect of "
             f"{settings['true_effect']} standard deviations on the endpoint and a spillover "
             f"fraction of {settings['spillover_fraction']} applied to non-endpoint variables. "
             f"Estimands: the pooled endpoint effect and the heterogeneity statistics. "
@@ -1070,7 +1071,7 @@ def build_japanese(res: dict) -> list:
          "変数リストと出典はリポジトリで公開している。"))
     add(("h2", "2.3 個票データからの推定量"))
     add(("p",
-         f"標準化変数の相関行列に対する主成分分析により、負荷量が{num(res['ist']['loading_threshold'], 1)}以上の"
+         f"標準化変数の相関行列に対する主成分分析により、負荷量が{num(res['ist']['summary']['loading_threshold'], 1)}以上の"
          "主成分の寄与率和 (loading法) と、予測変数のみのPCA得点にエンドポイントを回帰して求める指標 (回帰法) を用いた。"))
     add(("h2", "2.4 メタ解析と感度分析"))
     add(("p",
