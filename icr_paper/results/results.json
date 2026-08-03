@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generated_utc": "2026-08-03T08:05:41Z",
-    "git_commit": "9ba7d28ff1d18e6aa8c364554ba1692f0633fd1b",
+    "generated_utc": "2026-08-03T09:26:59Z",
+    "git_commit": "c27eb0d6531ee213123f242f180c8fc320279f2b",
     "python_version": "3.10.12",
     "numpy_version": "2.2.6",
     "pandas_version": "2.3.3",
-    "runtime_seconds": 290.0,
+    "runtime_seconds": 298.6,
     "data_dir": "data"
   },
   "simulation": {
