@@ -76,7 +76,7 @@ The regression-based estimator performs PCA on the predictors only, regresses th
 
     ICR_pca_reg = sum_k beta_k^2 lambda_k / (sum_k lambda_k + Var(Y)).
 
-The loading threshold is arbitrary; we report it explicitly and treat the loading-based estimator as the more fragile of the two.
+The loading threshold of 0.3 corresponds roughly to a squared loading of 0.1, i.e. a variable contributing at least about 10% of a component's variance; we report it explicitly and treat the loading-based estimator as the more fragile of the two.
 
 
 ### 2.4 Dispersion measures

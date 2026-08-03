@@ -432,8 +432,11 @@ def build_english(res: dict) -> list:
     add(
         (
             "p",
-            "The loading threshold is arbitrary; we report it explicitly and treat the "
-            "loading-based estimator as the more fragile of the two.",
+            f"The loading threshold of {num(res['ist']['summary']['loading_threshold'], 1)} "
+            f"corresponds roughly to a squared loading of "
+            f"{num(res['ist']['summary']['loading_threshold'] ** 2, 1)}, i.e. a variable "
+            "contributing at least about 10% of a component's variance; we report it "
+            "explicitly and treat the loading-based estimator as the more fragile of the two.",
         )
     )
 
@@ -1072,7 +1075,9 @@ def build_japanese(res: dict) -> list:
     add(("h2", "2.3 個票データからの推定量"))
     add(("p",
          f"標準化変数の相関行列に対する主成分分析により、負荷量が{num(res['ist']['summary']['loading_threshold'], 1)}以上の"
-         "主成分の寄与率和 (loading法) と、予測変数のみのPCA得点にエンドポイントを回帰して求める指標 (回帰法) を用いた。"))
+         "主成分の寄与率和 (loading法) と、予測変数のみのPCA得点にエンドポイントを回帰して求める指標 (回帰法) を用いた。"
+         f"このしきい値は2乗負荷量約{num(res['ist']['summary']['loading_threshold'] ** 2, 1)}（変数が主成分の約10%の分散を説明）"
+         "に概ね対応し、恣意的であることを明示する。"))
     add(("h2", "2.4 メタ解析と感度分析"))
     add(("p",
          "DerSimonian-Laird、REML、Paule-Mandelの3つのτ²推定量、Wald法とHartung-Knapp法の信頼区間、"
