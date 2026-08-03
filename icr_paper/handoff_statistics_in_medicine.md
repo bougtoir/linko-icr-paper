@@ -69,9 +69,21 @@
 
 ## 他論文との配置（重複避け）
 - LINKO → Statistics in Medicine（本セッション）
-- IONE → Statistical Methods in Medical Research
-- KOTHA → Journal of Clinical Epidemiology（臨床/GRADE強調）
-- ONISHI → Research Synthesis Methods（現在審査中）
+- IONE → Statistical Methods in Medical Research（SAGE、IF 1.6、APC $0 Subscription）
+- KOTHA → Contemporary Clinical Trials（Elsevier、IF 1.9、APC $0 Subscription）
+- ONISHI → Research Synthesis Methods（Wiley、IF 6.1、現在審査中）
+
+## 最終的な4論文配置（2026-08-03 確定）
+
+| 論文 | 投稿先 | IF (2024) | 出版社 | APC | 備考 |
+|---|---|---|---|---|---|
+| **LINKO** | Statistics in Medicine | 1.99 | Wiley | $0（Subscription） | 本ファイルのメイン対象。修正後に投稿。 |
+| **IONE** | Statistical Methods in Medical Research | 1.6 | SAGE | $0（Subscription） | シミュレーション・コヒーレンス診断を強調。 |
+| **KOTHA** | Contemporary Clinical Trials | 1.9 | Elsevier | $0（Subscription） | 試験方法論（evidence synthesis within trial methodology）として再位置づけ。 |
+| **ONISHI** | Research Synthesis Methods | 6.1 | Wiley | $0（Subscription） | 現在RSM審査中。rejectならEpidemiology/IJEを検討。 |
+
+- **トータルAPC**: $0（全てSubscription選択）
+- **重複回避**: 4誌を異なる出版社・雑誌に分散
 
 ## 参考資料
 - BMC MRM拒否メール内 Reviewer 1/2 attachments:
