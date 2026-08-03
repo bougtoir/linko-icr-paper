@@ -219,7 +219,7 @@ The author declares no conflict of interest.
 
 ## Data availability statement
 
-The International Stroke Trial data are openly available from the University of Edinburgh DataShare repository at https://datashare.ed.ac.uk/handle/10283/124 and are downloaded by the script provided with the analysis code. The baseline and effect data extracted from the published statin and glucose-control trials, with their per-study citations, are included in the code repository. All analysis code, the generated results files and the manuscript build script are available at https://github.com/bougtoir/linko-icr-paper. Every number in this article is regenerated from those sources by a single command; the results files record the software versions and the commit used (commit e8468666c99e).
+The International Stroke Trial data are openly available from the University of Edinburgh DataShare repository at https://datashare.ed.ac.uk/handle/10283/124 and are downloaded by the script provided with the analysis code. The baseline and effect data extracted from the published statin and glucose-control trials, with their per-study citations, are included in the code repository. All analysis code, the generated results files and the manuscript build script are available at https://github.com/bougtoir/linko-icr-paper. Every number in this article is regenerated from those sources by a single command; the results files record the software versions and the commit used (commit 6689548cb6f3).
 
 
 ## Ethics
