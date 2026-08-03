@@ -258,7 +258,7 @@ def run_ist_block() -> tuple[dict, dict]:
             f"IST data not found at {DEFAULT_IST_PATH}.\n"
             "Run: bash scripts/download_ist.sh"
         )
-    ist = run_ist_pca_analysis()
+    ist = run_ist_pca_analysis(threshold=LOADING_THRESHOLD)
     res_df = ist["country_results"]
     _write_table(res_df, "ist_country_results.csv")
 
@@ -269,7 +269,6 @@ def run_ist_block() -> tuple[dict, dict]:
     excl = loo[~loo["excluded_country"].str.startswith("None")]
     block = {
         "summary": _json_safe(ist["summary"]),
-        "loading_threshold": LOADING_THRESHOLD,
         "countries": _json_safe(res_df.to_dict(orient="records")),
         "leave_one_out": _json_safe(loo.to_dict(orient="records")),
         "loo_ranges": {

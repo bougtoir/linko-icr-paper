@@ -305,6 +305,7 @@ def generate_ist_pca_figure(
 def run_ist_pca_analysis(
     data_path: str = str(DEFAULT_IST_PATH),
     output_dir: str = str(DEFAULT_FIGURE_DIR),
+    threshold: float = 0.3,
 ) -> dict:
     """Run the full IST PCA-based ICR analysis.
 
@@ -313,15 +314,16 @@ def run_ist_pca_analysis(
     dict with keys: country_results (DataFrame), summary (dict), figure_path (str)
     """
     df, all_vars, endpoint_col = load_and_encode_ist(data_path)
-    res_df = compute_icr_pca_by_country(df, all_vars, endpoint_col)
+    res_df = compute_icr_pca_by_country(df, all_vars, endpoint_col, threshold=threshold)
 
     analysis_df = df[all_vars + ["COUNTRY"]].dropna()
     figure_path = generate_ist_pca_figure(
-        res_df, all_vars, endpoint_col, analysis_df, output_dir=output_dir
+        res_df, all_vars, endpoint_col, analysis_df, output_dir=output_dir, threshold=threshold
     )
 
     summary = {
         "data_path": str(data_path),
+        "loading_threshold": float(threshold),
         "n_patients_raw": int(len(df)),
         "n_patients_complete": int(len(analysis_df)),
         "n_countries_total": int(df["COUNTRY"].nunique()),
