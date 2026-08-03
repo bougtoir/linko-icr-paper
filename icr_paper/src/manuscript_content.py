@@ -691,9 +691,9 @@ def build_english(res: dict) -> list:
     add(
         (
             "p",
-            "Figure 3 and Figure 4 show the two collections as prism forest plots, in which the "
-            "structural difference between the collections is visible alongside the effect "
-            "estimates.",
+            "Figure 3 shows the statin collection as a prism forest plot, in which ICR_std is "
+            "visible alongside the effect estimates. The same display for the intensive "
+            "glucose-control collection is given in Supplementary Figure S1.",
         )
     )
     add(_fig(
@@ -703,7 +703,7 @@ def build_english(res: dict) -> list:
         "panel lists the values. The display is descriptive.",
     ))
     add(_fig(
-        "Figure 4",
+        "Supplementary Figure S1",
         "fig_linko_prism_glucose_control.png",
         "Prism forest plot for the intensive glucose-control collection.",
     ))
@@ -721,7 +721,7 @@ def build_english(res: dict) -> list:
             f"{num(ist_sum['icr_pca_loading_cv'], 2)}) and the regression-based estimator from "
             f"{ist_sum['icr_pca_reg_range'][0]:.5f} to {ist_sum['icr_pca_reg_range'][1]:.5f} "
             f"(coefficient of variation {num(ist_sum['icr_pca_reg_cv'], 2)}), while ICR_std was "
-            f"identical at {num(ist_sum['icr_std'])} by construction (Table 6, Figure 5). The "
+            f"identical at {num(ist_sum['icr_std'])} by construction (Table 6, Figure 4). The "
             "regression-based estimator was associated with 14-day mortality "
             f"(r = {num(corr['r_regression'])}, {pval(corr['p_regression'])}); the loading-based "
             f"estimator was not (r = {num(corr['r_loading'])}, {pval(corr['p_loading'])}). In "
@@ -729,7 +729,7 @@ def build_english(res: dict) -> list:
             f"r = {num(loo['r_regression'][0])} to {num(loo['r_regression'][1])} "
             f"(P from {pval_plain(loo['p_regression'][0])} to {pval_plain(loo['p_regression'][1])}) "
             f"and the loading-based association from r = {num(loo['r_loading'][0])} to "
-            f"{num(loo['r_loading'][1])} (Table 7, Figure 6).",
+            f"{num(loo['r_loading'][1])} (Supplementary Table S1, Supplementary Figure S2)."
         )
     )
     add(
@@ -759,13 +759,13 @@ def build_english(res: dict) -> list:
         )
     )
     add(_fig(
-        "Figure 5",
+        "Figure 4",
         "fig_pca_ist_analysis.png",
         "Principal-component-based ICR in eight International Stroke Trial country groups: "
         "estimator values, their dispersion, and their relation to 14-day mortality.",
     ))
     add(_fig(
-        "Figure 6",
+        "Supplementary Figure S2",
         "fig_loo_sensitivity.png",
         "Leave-one-out recomputation of the association between each PCA-based ICR estimator and "
         "14-day mortality across the eight country groups.",
@@ -773,12 +773,12 @@ def build_english(res: dict) -> list:
     add(
         (
             "p",
-            "Figure 7 displays the same groups as a prism forest plot, with both PCA-based "
+            "Figure 5 displays the same groups as a prism forest plot, with both PCA-based "
             "estimators encoded simultaneously.",
         )
     )
     add(_fig(
-        "Figure 7",
+        "Figure 5",
         "fig_linko_prism_ist.png",
         "Prism forest plot for the International Stroke Trial country groups, with colour encoding "
         "the loading-based estimator and marker size the regression-based estimator. Rates are "
@@ -793,7 +793,7 @@ def build_english(res: dict) -> list:
             "estimate with fewer studies than random ordering: the mean number of studies required "
             f"was {num(conv['random']['mean_conclusive'], 2)} for random ordering, "
             f"{num(conv['matched']['mean_conclusive'], 2)} for ICR-matched ordering and "
-            f"{num(conv['linko']['mean_conclusive'], 2)} for ICR-median ordering (Table 8). We "
+            f"{num(conv['linko']['mean_conclusive'], 2)} for ICR-median ordering (Table 7). We "
             "report this negative result because ICR-guided prioritisation is an obvious "
             "application of the measure and, on this evidence, it is not supported.",
         )
@@ -973,7 +973,7 @@ def build_english(res: dict) -> list:
     ))
     add(("pagebreak", None))
     add(_table(
-        "Table 7",
+        "Supplementary Table S1",
         "Leave-one-out recomputation of the association between the PCA-based ICR estimators and "
         "14-day mortality across the International Stroke Trial country groups.",
         [
@@ -988,7 +988,7 @@ def build_english(res: dict) -> list:
     ))
     add(("pagebreak", None))
     add(_table(
-        "Table 8",
+        "Table 7",
         "Number of studies required before the pooled estimate excluded the null, by ordering "
         f"strategy ({res['early_convergence']['n_iterations']} repetitions of "
         f"{res['early_convergence']['settings']['n_studies_total']} simulated studies).",
@@ -1123,13 +1123,13 @@ def build_japanese(res: dict) -> list:
          f"回帰法は{ist_sum['icr_pca_reg_range'][0]:.5f}〜{ist_sum['icr_pca_reg_range'][1]:.5f}で変動した (表6)。"
          f"回帰法は14日死亡率と関連し (r = {num(corr['r_regression'])}, {pval(corr['p_regression'])})、"
          f"loading法では関連は認めなかった (r = {num(corr['r_loading'])}, {pval(corr['p_loading'])})。"
-         "Leave-one-out解析の結果を表7に示す。8群は独立でなく、この結果は仮説生成的である。"))
+         "Leave-one-out解析の結果を補足表S1に示す。8群は独立でなく、この結果は仮説生成的である。"))
     add(("h2", "3.5 研究の並べ替え"))
     add(("p",
          f"ICR中央値に近い順に研究を追加しても結論到達に要する研究数は減少しなかった "
          f"(ランダム {num(conv['random']['mean_conclusive'], 2)}件、"
          f"ICR一致 {num(conv['matched']['mean_conclusive'], 2)}件、"
-         f"LINKO {num(conv['linko']['mean_conclusive'], 2)}件、表8)。"))
+         f"LINKO {num(conv['linko']['mean_conclusive'], 2)}件、表7)。"))
 
     add(("h1", "4 考察"))
     add(("p",
@@ -1176,10 +1176,10 @@ def build_japanese(res: dict) -> list:
     add(_table("表6", "IST国別群のICR推定量",
                ["国群", "患者数", "14日死亡率", "ICR_std", "ICR_pca (loading)", "ICR_pca (回帰)", "該当主成分数"],
                ist_table_rows(res)))
-    add(_table("表7", "Leave-one-out感度分析",
+    add(_table("補足表S1", "Leave-one-out感度分析",
                ["除外群", "解析群数", "r (loading)", "P (loading)", "r (回帰)", "P (回帰)"],
                loo_table_rows(res)))
-    add(_table("表8", "研究順序付け戦略の比較",
+    add(_table("表7", "研究順序付け戦略の比較",
                ["戦略", "結論到達までの平均研究数", "中央値", "5件以内", "10件以内", "I²<25%までの平均"],
                convergence_table_rows(res)))
     return blocks

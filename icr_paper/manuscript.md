@@ -144,7 +144,7 @@ ICR_raw ranged from 0.000005 to 0.001357 across the studies of the two collectio
 
 Conclusions were unchanged under alternative between-study variance estimators, Hartung-Knapp intervals and prediction intervals (Table 5); the prediction intervals are, as expected, considerably wider than the confidence intervals.
 
-Figure 3 and Figure 4 show the two collections as prism forest plots, in which the structural difference between the collections is visible alongside the effect estimates.
+Figure 3 shows the statin collection as a prism forest plot, in which ICR_std is visible alongside the effect estimates. The same display for the intensive glucose-control collection is given in Supplementary Figure S1.
 
 
 ![Figure 3](figures/fig_linko_prism_statin.png)
@@ -152,40 +152,40 @@ Figure 3 and Figure 4 show the two collections as prism forest plots, in which t
 *Figure 3. Prism forest plot for the statin collection. Marker colour encodes ICR_std; the side panel lists the values. The display is descriptive.*
 
 
-![Figure 4](figures/fig_linko_prism_glucose_control.png)
+![Supplementary Figure S1](figures/fig_linko_prism_glucose_control.png)
 
-*Figure 4. Prism forest plot for the intensive glucose-control collection.*
+*Supplementary Figure S1. Prism forest plot for the intensive glucose-control collection.*
 
 
 ### 3.4 Exploratory individual participant data analysis
 
-Across the 8 IST country groups, the loading-based estimator ranged from 0.046 to 0.180 (coefficient of variation 0.36) and the regression-based estimator from 0.00073 to 0.00230 (coefficient of variation 0.33), while ICR_std was identical at 0.040 by construction (Table 6, Figure 5). The regression-based estimator was associated with 14-day mortality (r = 0.896, P = 0.003); the loading-based estimator was not (r = 0.265, P = 0.526). In leave-one-out recomputation the regression-based association ranged from r = 0.843 to 0.954 (P from < 0.001 to 0.017) and the loading-based association from r = 0.154 to 0.526 (Table 7, Figure 6).
+Across the 8 IST country groups, the loading-based estimator ranged from 0.046 to 0.180 (coefficient of variation 0.36) and the regression-based estimator from 0.00073 to 0.00230 (coefficient of variation 0.33), while ICR_std was identical at 0.040 by construction (Table 6, Figure 4). The regression-based estimator was associated with 14-day mortality (r = 0.896, P = 0.003); the loading-based estimator was not (r = 0.265, P = 0.526). In leave-one-out recomputation the regression-based association ranged from r = 0.843 to 0.954 (P from < 0.001 to 0.017) and the loading-based association from r = 0.154 to 0.526 (Supplementary Table S1, Supplementary Figure S2).
 
 The association is not explained by group size alone: the logarithm of the number of patients was correlated with mortality at r = 0.489 (P = 0.218) and with the regression-based estimator at r = 0.234 (P = 0.578), and the partial correlation of the regression-based estimator with mortality given log group size was r = 0.921 (P = 0.003, 5 degrees of freedom). With eight groups this adjustment has very little power and cannot exclude confounding by case mix or by other group-level features.
 
 These groups share a protocol and a case-report form and differ in case mix, so an association between a covariance-structure summary and mortality is expected under several explanations that have nothing to do with meta-analytic pooling; with eight non-independent groups the association is hypothesis-generating only. We report it to show that the PCA estimators are computable and do vary meaningfully, not as validation of the framework.
 
 
-![Figure 5](figures/fig_pca_ist_analysis.png)
+![Figure 4](figures/fig_pca_ist_analysis.png)
 
-*Figure 5. Principal-component-based ICR in eight International Stroke Trial country groups: estimator values, their dispersion, and their relation to 14-day mortality.*
-
-
-![Figure 6](figures/fig_loo_sensitivity.png)
-
-*Figure 6. Leave-one-out recomputation of the association between each PCA-based ICR estimator and 14-day mortality across the eight country groups.*
-
-Figure 7 displays the same groups as a prism forest plot, with both PCA-based estimators encoded simultaneously.
+*Figure 4. Principal-component-based ICR in eight International Stroke Trial country groups: estimator values, their dispersion, and their relation to 14-day mortality.*
 
 
-![Figure 7](figures/fig_linko_prism_ist.png)
+![Supplementary Figure S2](figures/fig_loo_sensitivity.png)
 
-*Figure 7. Prism forest plot for the International Stroke Trial country groups, with colour encoding the loading-based estimator and marker size the regression-based estimator. Rates are shown for display; the groups are not independent trials.*
+*Supplementary Figure S2. Leave-one-out recomputation of the association between each PCA-based ICR estimator and 14-day mortality across the eight country groups.*
+
+Figure 5 displays the same groups as a prism forest plot, with both PCA-based estimators encoded simultaneously.
+
+
+![Figure 5](figures/fig_linko_prism_ist.png)
+
+*Figure 5. Prism forest plot for the International Stroke Trial country groups, with colour encoding the loading-based estimator and marker size the regression-based estimator. Rates are shown for display; the groups are not independent trials.*
 
 
 ### 3.5 Study ordering
 
-Ordering studies by proximity to the median ICR did not reach a conclusive pooled estimate with fewer studies than random ordering: the mean number of studies required was 3.94 for random ordering, 3.91 for ICR-matched ordering and 4.00 for ICR-median ordering (Table 8). We report this negative result because ICR-guided prioritisation is an obvious application of the measure and, on this evidence, it is not supported.
+Ordering studies by proximity to the median ICR did not reach a conclusive pooled estimate with fewer studies than random ordering: the mean number of studies required was 3.94 for random ordering, 3.91 for ICR-matched ordering and 4.00 for ICR-median ordering (Table 7). We report this negative result because ICR-guided prioritisation is an obvious application of the measure and, on this evidence, it is not supported.
 
 
 ## 4 Discussion
@@ -332,7 +332,7 @@ This study analysed simulated data and a publicly available, de-identified datas
 | Argentina | 545 | 21.8% | 0.040 | 0.079 | 0.00157 | 3 |
 
 
-**Table 7.** Leave-one-out recomputation of the association between the PCA-based ICR estimators and 14-day mortality across the International Stroke Trial country groups.
+**Supplementary Table S1.** Leave-one-out recomputation of the association between the PCA-based ICR estimators and 14-day mortality across the International Stroke Trial country groups.
 
 | Excluded group | Groups analysed | r (loading) | P (loading) | r (regression) | P (regression) |
 |---|---|---|---|---|---|
@@ -347,7 +347,7 @@ This study analysed simulated data and a publicly available, de-identified datas
 | None (all countries) | 8 | 0.265 | 0.526 | 0.896 | 0.003 |
 
 
-**Table 8.** Number of studies required before the pooled estimate excluded the null, by ordering strategy (500 repetitions of 15 simulated studies).
+**Table 7.** Number of studies required before the pooled estimate excluded the null, by ordering strategy (500 repetitions of 15 simulated studies).
 
 | Ordering strategy | Mean studies to conclusive | Median | Conclusive by 5 studies | Conclusive by 10 studies | Mean studies to I-squared < 25% |
 |---|---|---|---|---|---|
