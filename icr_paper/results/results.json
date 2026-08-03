@@ -1,0 +1,827 @@
+{
+  "metadata": {
+    "generated_utc": "2026-08-03T07:43:43Z",
+    "git_commit": "e8468666c99e5ac810b08ffbb2e1ef11d1314593",
+    "python_version": "3.10.12",
+    "numpy_version": "2.2.6",
+    "pandas_version": "2.3.3",
+    "runtime_seconds": 301.1,
+    "data_dir": "/home/ubuntu/repos/wip/icr_paper/data"
+  },
+  "simulation": {
+    "n_iterations": 1000,
+    "settings": {
+      "n_studies_scenario_ab": 10,
+      "n_studies_scenario_c_initial": 5,
+      "n_studies_scenario_c_additional": 10,
+      "n_subjects_per_study": 200,
+      "true_effect": 0.5,
+      "spillover_fraction": 0.3,
+      "dimensions_scenario_a": 20,
+      "dimensions_scenario_b": [
+        5,
+        10,
+        20,
+        40,
+        80
+      ],
+      "dimensions_scenario_c_additional": [
+        5,
+        10,
+        40,
+        60,
+        80
+      ],
+      "seed": 42
+    },
+    "scenario_a": {
+      "i_squared": {
+        "mean": 11.444759456443032,
+        "sd": 16.58575207739866,
+        "mcse": 0.5244875327144907,
+        "n_iterations": 1000
+      },
+      "icrd": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "mcse": 0.0,
+        "n_iterations": 1000
+      },
+      "pooled_effect": {
+        "mean": 0.5019502674012126,
+        "sd": 0.046232787775112506,
+        "mcse": 0.0014620091194854402,
+        "n_iterations": 1000
+      },
+      "tau_squared": {
+        "mean": 0.0038811891277789937,
+        "sd": 0.0066974710426421094,
+        "mcse": 0.00021179263057771765,
+        "n_iterations": 1000
+      },
+      "bias": {
+        "mean": 0.0019502674012125726,
+        "sd": 0.046232787775112506,
+        "mcse": 0.0014620091194854402,
+        "n_iterations": 1000
+      }
+    },
+    "scenario_b": {
+      "i_squared": {
+        "mean": 11.038565437270233,
+        "sd": 16.61208570520891,
+        "mcse": 0.525320275143846,
+        "n_iterations": 1000
+      },
+      "icrd": {
+        "mean": 0.173975,
+        "sd": 0.03327527789694804,
+        "mcse": 0.0010522566792941345,
+        "n_iterations": 1000
+      },
+      "pooled_effect": {
+        "mean": 0.49713267596345223,
+        "sd": 0.04351454504162311,
+        "mcse": 0.0013760507367751547,
+        "n_iterations": 1000
+      },
+      "tau_squared": {
+        "mean": 0.0037823580479643547,
+        "sd": 0.006734953745707472,
+        "mcse": 0.00021297793772318086,
+        "n_iterations": 1000
+      },
+      "bias": {
+        "mean": -0.002867324036547756,
+        "sd": 0.04351454504162311,
+        "mcse": 0.0013760507367751547,
+        "n_iterations": 1000
+      }
+    },
+    "difference_b_minus_a": {
+      "i_squared": {
+        "mean_difference": -0.40619401917280107,
+        "sd": 24.296834366691133,
+        "mcse": 0.7683333653059871,
+        "ci_lower": -1.9121274151725356,
+        "ci_upper": 1.0997393768269335,
+        "n_iterations": 1000
+      },
+      "tau_squared": {
+        "mean_difference": -9.883107981463936e-05,
+        "sd": 0.00985300425947843,
+        "mcse": 0.00031157935255292526,
+        "ci_lower": -0.0007095266108183728,
+        "ci_upper": 0.0005118644511890941,
+        "n_iterations": 1000
+      }
+    },
+    "scenario_c": {
+      "i_squared_change": {
+        "mean": -2.8565292298936185,
+        "sd": 18.748764503939523,
+        "mcse": 0.5928879914656584,
+        "n_iterations": 1000
+      },
+      "proportion_increased": 0.263,
+      "proportion_increased_se": 0.013922320208930694
+    },
+    "correlation_icrd_i_squared": {
+      "r": -0.008422761394824053,
+      "p": 0.7065834755107872
+    }
+  },
+  "negative_control": {
+    "n_iterations": 500,
+    "i_squared": {
+      "mean": 11.013785493447129,
+      "sd": 16.351209603780216,
+      "mcse": 0.7312483237679993,
+      "n_iterations": 500
+    },
+    "tau_squared": {
+      "mean": 0.0036996343848223604,
+      "sd": 0.0063590849210939625,
+      "mcse": 0.0002843869231651997,
+      "n_iterations": 500
+    },
+    "icrd": {
+      "mean": 0.170925,
+      "sd": 0.03698232360897619,
+      "mcse": 0.0016538997911113224,
+      "n_iterations": 500
+    }
+  },
+  "redundancy": {
+    "n_iterations": 500,
+    "summary": [
+      {
+        "n_redundant": 0,
+        "n_variables": 20.0,
+        "icr_std": 0.05,
+        "icr_raw": 0.05288533152681561,
+        "effective_dimension": 11.972137995354654,
+        "icr_effective": 0.08372987724272948
+      },
+      {
+        "n_redundant": 5,
+        "n_variables": 25.0,
+        "icr_std": 0.04,
+        "icr_raw": 0.0423179065806057,
+        "effective_dimension": 11.201403802912006,
+        "icr_effective": 0.08947517746934003
+      },
+      {
+        "n_redundant": 10,
+        "n_variables": 30.0,
+        "icr_std": 0.03333333333333333,
+        "icr_raw": 0.03526852651374587,
+        "effective_dimension": 11.259860711284492,
+        "icr_effective": 0.0890058106608049
+      },
+      {
+        "n_redundant": 20,
+        "n_variables": 40.0,
+        "icr_std": 0.025,
+        "icr_raw": 0.026454244865947517,
+        "effective_dimension": 11.816817808454703,
+        "icr_effective": 0.08482742320917862
+      }
+    ],
+    "icr_std_ratio_max_to_base": 0.5,
+    "icr_effective_ratio_max_to_base": 1.013108175989168
+  },
+  "realworld": {
+    "statin": {
+      "description": "Statin therapy for cardiovascular prevention. Landmark RCTs with a consistent all-cause mortality benefit and similar baseline variable sets.",
+      "n_studies": 5,
+      "meta_analysis": {
+        "pooled_effect": -0.2505490196078431,
+        "pooled_se": 0.057394404318355144,
+        "ci_lower": -0.36304205207181917,
+        "ci_upper": -0.13805598714386702,
+        "tau_squared": 0,
+        "i_squared": 0,
+        "h_squared": 0.6628937908496731,
+        "q_statistic": 2.6515751633986926,
+        "q_p_value": 0.6177145291395818,
+        "k_studies": 5
+      },
+      "icr_statistics": {
+        "icr_mean": 0.09818181818181818,
+        "icr_sd": 0.00406557814090871,
+        "icr_cv": 0.041408666249996125,
+        "icrd": 0.009090909090909094
+      },
+      "icr_std_range": [
+        0.09090909090909091,
+        0.1
+      ],
+      "icr_raw_range": [
+        4.628944258720517e-06,
+        2.6750024959513382e-05
+      ],
+      "n_variables_range": [
+        10,
+        11
+      ],
+      "correlation_icr_effect": {
+        "icr_vs_effect_r": -0.5758685663224149,
+        "icr_vs_effect_p": 0.30960936826140933
+      },
+      "studies": [
+        {
+          "study": "4S (1994)",
+          "n_total": 4444,
+          "n_variables": 10,
+          "n_endpoints": 1,
+          "icr_std": 0.1,
+          "icr_raw": 1.71737905966951e-05,
+          "icr_raw_intervention": 1.3991947759344442e-05,
+          "icr_raw_control": 2.0368633273152937e-05,
+          "group_icr_difference": 6.376685513808495e-06,
+          "effect_size": -0.37,
+          "effect_var": 0.012
+        },
+        {
+          "study": "WOSCOPS (1995)",
+          "n_total": 6595,
+          "n_variables": 10,
+          "n_endpoints": 1,
+          "icr_std": 0.1,
+          "icr_raw": 6.4389171602145965e-06,
+          "icr_raw_intervention": 5.537686477542913e-06,
+          "icr_raw_control": 7.3829165105392195e-06,
+          "group_icr_difference": 1.8452300329963066e-06,
+          "effect_size": -0.25,
+          "effect_var": 0.035
+        },
+        {
+          "study": "CARE (1996)",
+          "n_total": 4159,
+          "n_variables": 11,
+          "n_endpoints": 1,
+          "icr_std": 0.09090909090909091,
+          "icr_raw": 2.1265061544991157e-05,
+          "icr_raw_intervention": 2.0906024075205296e-05,
+          "icr_raw_control": 2.159668726475609e-05,
+          "group_icr_difference": 6.906631895507935e-07,
+          "effect_size": -0.1,
+          "effect_var": 0.02
+        },
+        {
+          "study": "LIPID (1998)",
+          "n_total": 9014,
+          "n_variables": 10,
+          "n_endpoints": 1,
+          "icr_std": 0.1,
+          "icr_raw": 2.6750024959513382e-05,
+          "icr_raw_intervention": 2.4831679135137216e-05,
+          "icr_raw_control": 2.842711087600514e-05,
+          "group_icr_difference": 3.5954317408679257e-06,
+          "effect_size": -0.25,
+          "effect_var": 0.008
+        },
+        {
+          "study": "AFCAPS/TexCAPS (1998)",
+          "n_total": 6605,
+          "n_variables": 10,
+          "n_endpoints": 1,
+          "icr_std": 0.1,
+          "icr_raw": 4.628944258720517e-06,
+          "icr_raw_intervention": 4.2647716698330305e-06,
+          "icr_raw_control": 5.013595605356204e-06,
+          "group_icr_difference": 7.488239355231737e-07,
+          "effect_size": -0.11,
+          "effect_var": 0.06
+        }
+      ],
+      "meta_sensitivity": [
+        {
+          "tau2_estimator": "DerSimonian-Laird",
+          "interval": "Wald",
+          "tau_squared": 0.0,
+          "pooled_effect": -0.2505490196078431,
+          "pooled_se": 0.057394404318355144,
+          "ci_lower": -0.36303998498594936,
+          "ci_upper": -0.13805805422973685,
+          "i_squared": 0.0,
+          "pi_lower": -0.43320362957478353,
+          "pi_upper": -0.06789440964090263
+        },
+        {
+          "tau2_estimator": "DerSimonian-Laird",
+          "interval": "Hartung-Knapp",
+          "tau_squared": 0.0,
+          "pooled_effect": -0.2505490196078431,
+          "pooled_se": 0.04672954241765726,
+          "ci_lower": -0.3802910289214805,
+          "ci_upper": -0.12080701029420568,
+          "i_squared": 0.0,
+          "pi_lower": -0.3992632792225407,
+          "pi_upper": -0.10183475999314551
+        },
+        {
+          "tau2_estimator": "REML",
+          "interval": "Wald",
+          "tau_squared": 0.0,
+          "pooled_effect": -0.2505490196078431,
+          "pooled_se": 0.057394404318355144,
+          "ci_lower": -0.36303998498594936,
+          "ci_upper": -0.13805805422973685,
+          "i_squared": 0.0,
+          "pi_lower": -0.43320362957478353,
+          "pi_upper": -0.06789440964090263
+        },
+        {
+          "tau2_estimator": "REML",
+          "interval": "Hartung-Knapp",
+          "tau_squared": 0.0,
+          "pooled_effect": -0.2505490196078431,
+          "pooled_se": 0.04672954241765726,
+          "ci_lower": -0.3802910289214805,
+          "ci_upper": -0.12080701029420568,
+          "i_squared": 0.0,
+          "pi_lower": -0.3992632792225407,
+          "pi_upper": -0.10183475999314551
+        },
+        {
+          "tau2_estimator": "Paule-Mandel",
+          "interval": "Wald",
+          "tau_squared": 0.0,
+          "pooled_effect": -0.2505490196078431,
+          "pooled_se": 0.057394404318355144,
+          "ci_lower": -0.36303998498594936,
+          "ci_upper": -0.13805805422973685,
+          "i_squared": 0.0,
+          "pi_lower": -0.43320362957478353,
+          "pi_upper": -0.06789440964090263
+        },
+        {
+          "tau2_estimator": "Paule-Mandel",
+          "interval": "Hartung-Knapp",
+          "tau_squared": 0.0,
+          "pooled_effect": -0.2505490196078431,
+          "pooled_se": 0.04672954241765726,
+          "ci_lower": -0.3802910289214805,
+          "ci_upper": -0.12080701029420568,
+          "i_squared": 0.0,
+          "pi_lower": -0.3992632792225407,
+          "pi_upper": -0.10183475999314551
+        }
+      ]
+    },
+    "glucose_control": {
+      "description": "Intensive glucose control in type 2 diabetes. Trials whose all-cause mortality results diverged and whose baseline variable sets differ in size.",
+      "n_studies": 4,
+      "meta_analysis": {
+        "pooled_effect": -0.003341904449189237,
+        "pooled_se": 0.06499147324415269,
+        "ci_lower": -0.13072519200772853,
+        "ci_upper": 0.12404138310935005,
+        "tau_squared": 0.0029725790513833975,
+        "i_squared": 16.973467055985775,
+        "h_squared": 1.2044342507645258,
+        "q_statistic": 3.6133027522935777,
+        "q_p_value": 0.3063617072226036,
+        "k_studies": 4
+      },
+      "icr_statistics": {
+        "icr_mean": 0.09214743589743589,
+        "icr_sd": 0.0221091902634347,
+        "icr_cv": 0.23993277781536093,
+        "icrd": 0.04807692307692307
+      },
+      "icr_std_range": [
+        0.07692307692307693,
+        0.125
+      ],
+      "icr_raw_range": [
+        4.720240602029447e-06,
+        0.0013570481244645433
+      ],
+      "n_variables_range": [
+        8,
+        13
+      ],
+      "correlation_icr_effect": {
+        "icr_vs_effect_r": -0.4992473368800664,
+        "icr_vs_effect_p": 0.5007526631199335
+      },
+      "studies": [
+        {
+          "study": "UKPDS 33 (1998)",
+          "n_total": 3867,
+          "n_variables": 8,
+          "n_endpoints": 1,
+          "icr_std": 0.125,
+          "icr_raw": 0.0013570481244645433,
+          "icr_raw_intervention": 0.001339114894805952,
+          "icr_raw_control": 0.0014001038520654215,
+          "group_icr_difference": 6.098895725946949e-05,
+          "effect_size": -0.06,
+          "effect_var": 0.008
+        },
+        {
+          "study": "ACCORD (2008)",
+          "n_total": 10251,
+          "n_variables": 13,
+          "n_endpoints": 1,
+          "icr_std": 0.07692307692307693,
+          "icr_raw": 0.00010312183693905176,
+          "icr_raw_intervention": 0.00011397261010234019,
+          "icr_raw_control": 9.21401788047355e-05,
+          "group_icr_difference": 2.183243129760469e-05,
+          "effect_size": 0.22,
+          "effect_var": 0.018
+        },
+        {
+          "study": "ADVANCE (2008)",
+          "n_total": 11140,
+          "n_variables": 12,
+          "n_endpoints": 1,
+          "icr_std": 0.08333333333333333,
+          "icr_raw": 7.000129023540194e-05,
+          "icr_raw_intervention": 6.786873687015709e-05,
+          "icr_raw_control": 7.214865331268206e-05,
+          "group_icr_difference": 4.279916442524967e-06,
+          "effect_size": -0.07,
+          "effect_var": 0.01
+        },
+        {
+          "study": "VADT (2009)",
+          "n_total": 1791,
+          "n_variables": 12,
+          "n_endpoints": 1,
+          "icr_std": 0.08333333333333333,
+          "icr_raw": 4.720240602029447e-06,
+          "icr_raw_intervention": 4.253801280726527e-06,
+          "icr_raw_control": 5.287525060785089e-06,
+          "group_icr_difference": 1.0337237800585624e-06,
+          "effect_size": -0.02,
+          "effect_var": 0.045
+        }
+      ],
+      "meta_sensitivity": [
+        {
+          "tau2_estimator": "DerSimonian-Laird",
+          "interval": "Wald",
+          "tau_squared": 0.0029725790513833975,
+          "pooled_effect": -0.003341904449189237,
+          "pooled_se": 0.06499147324415269,
+          "ci_lower": -0.13072285130992709,
+          "ci_upper": 0.1240390424115486,
+          "i_squared": 16.973467055985775,
+          "pi_lower": -0.3683446022319703,
+          "pi_upper": 0.3616607933335918
+        },
+        {
+          "tau2_estimator": "DerSimonian-Laird",
+          "interval": "Hartung-Knapp",
+          "tau_squared": 0.0029725790513833975,
+          "pooled_effect": -0.003341904449189237,
+          "pooled_se": 0.06519997497534785,
+          "ci_lower": -0.21083732391411142,
+          "ci_upper": 0.20415351501573292,
+          "i_squared": 16.973467055985775,
+          "pi_lower": -0.369032350778652,
+          "pi_upper": 0.3623485418802735
+        },
+        {
+          "tau2_estimator": "REML",
+          "interval": "Wald",
+          "tau_squared": 0.003164290886757563,
+          "pooled_effect": -0.003048952514971701,
+          "pooled_se": 0.06543554875494917,
+          "ci_lower": -0.13130027138328684,
+          "ci_upper": 0.12520236635334345,
+          "i_squared": 16.973467055985775,
+          "pi_lower": -0.37432829277343366,
+          "pi_upper": 0.3682303877434902
+        },
+        {
+          "tau2_estimator": "REML",
+          "interval": "Hartung-Knapp",
+          "tau_squared": 0.003164290886757563,
+          "pooled_effect": -0.003048952514971701,
+          "pooled_se": 0.06530105411373652,
+          "ci_lower": -0.2108660509104002,
+          "ci_upper": 0.2047681458804568,
+          "i_squared": 16.973467055985775,
+          "pi_lower": -0.37388966047963795,
+          "pi_upper": 0.3677917554496945
+        },
+        {
+          "tau2_estimator": "Paule-Mandel",
+          "interval": "Wald",
+          "tau_squared": 0.003089061978987351,
+          "pooled_effect": -0.0031630679629546824,
+          "pooled_se": 0.06526179034643842,
+          "ci_lower": -0.13107382660857775,
+          "ci_upper": 0.12474769068266839,
+          "i_squared": 16.973467055985775,
+          "pi_lower": -0.37199260514072646,
+          "pi_upper": 0.3656664692148171
+        },
+        {
+          "tau2_estimator": "Paule-Mandel",
+          "interval": "Hartung-Knapp",
+          "tau_squared": 0.003089061978987351,
+          "pooled_effect": -0.0031630679629546824,
+          "pooled_se": 0.0652617903757987,
+          "ci_lower": -0.21085521162065132,
+          "ci_upper": 0.20452907569474196,
+          "i_squared": 16.973467055985775,
+          "pi_lower": -0.37199260523690225,
+          "pi_upper": 0.3656664693109929
+        }
+      ]
+    }
+  },
+  "ist": {
+    "summary": {
+      "data_path": "/home/ubuntu/repos/wip/icr_paper/data/ist/IST_corrected.csv",
+      "n_patients_raw": 19435,
+      "n_patients_complete": 18451,
+      "n_countries_total": 36,
+      "n_countries": 8,
+      "total_patients": 13766,
+      "n_variables": 25,
+      "icr_std": 0.04,
+      "icr_pca_loading_range": [
+        0.04629904278691889,
+        0.17966218354324653
+      ],
+      "icr_pca_loading_cv": 0.35961961310094914,
+      "icr_pca_reg_range": [
+        0.0007328208219441193,
+        0.0023039076248064397
+      ],
+      "icr_pca_reg_cv": 0.32881199985554577,
+      "corr_loading_mortality": 0.2648099137845664,
+      "corr_reg_mortality": 0.8955356463281371
+    },
+    "loading_threshold": 0.3,
+    "countries": [
+      {
+        "country": "United Kingdom",
+        "country_code": "UK",
+        "n": 5787,
+        "mortality_rate": 0.28598583030931396,
+        "icr_std": 0.04,
+        "icr_pca_loading": 0.13846121805960782,
+        "icr_pca_reg": 0.0016185279763828607,
+        "n_endpoint_pcs": 4
+      },
+      {
+        "country": "Italy",
+        "country_code": "ITAL",
+        "n": 3112,
+        "mortality_rate": 0.19987146529562982,
+        "icr_std": 0.04,
+        "icr_pca_loading": 0.04629904278691889,
+        "icr_pca_reg": 0.0015281910506832227,
+        "n_endpoint_pcs": 2
+      },
+      {
+        "country": "Switzerland",
+        "country_code": "SWIT",
+        "n": 1631,
+        "mortality_rate": 0.23114653586756592,
+        "icr_std": 0.04,
+        "icr_pca_loading": 0.12141597047914968,
+        "icr_pca_reg": 0.0013538009844130873,
+        "n_endpoint_pcs": 4
+      },
+      {
+        "country": "Poland",
+        "country_code": "POLA",
+        "n": 759,
+        "mortality_rate": 0.2964426877470356,
+        "icr_std": 0.04,
+        "icr_pca_loading": 0.13892899343838033,
+        "icr_pca_reg": 0.0023039076248064397,
+        "n_endpoint_pcs": 4
+      },
+      {
+        "country": "Netherlands",
+        "country_code": "NETH",
+        "n": 728,
+        "mortality_rate": 0.18269230769230768,
+        "icr_std": 0.04,
+        "icr_pca_loading": 0.17966218354324653,
+        "icr_pca_reg": 0.0013603390803802638,
+        "n_endpoint_pcs": 5
+      },
+      {
+        "country": "Sweden",
+        "country_code": "SWED",
+        "n": 636,
+        "mortality_rate": 0.12735849056603774,
+        "icr_std": 0.04,
+        "icr_pca_loading": 0.09613426145697375,
+        "icr_pca_reg": 0.0007328208219441193,
+        "n_endpoint_pcs": 3
+      },
+      {
+        "country": "Australia",
+        "country_code": "AUSL",
+        "n": 568,
+        "mortality_rate": 0.14964788732394366,
+        "icr_std": 0.04,
+        "icr_pca_loading": 0.10933305719317113,
+        "icr_pca_reg": 0.0009615434079494955,
+        "n_endpoint_pcs": 4
+      },
+      {
+        "country": "Argentina",
+        "country_code": "ARGE",
+        "n": 545,
+        "mortality_rate": 0.21834862385321102,
+        "icr_std": 0.04,
+        "icr_pca_loading": 0.07943231054007464,
+        "icr_pca_reg": 0.0015721809359801103,
+        "n_endpoint_pcs": 3
+      }
+    ],
+    "leave_one_out": [
+      {
+        "excluded_country": "United Kingdom",
+        "n_countries": 7,
+        "r_loading": 0.16911754042092297,
+        "p_loading": 0.7169851495348329,
+        "r_regression": 0.9541916535329549,
+        "p_regression": 0.0008415376882661949
+      },
+      {
+        "excluded_country": "Italy",
+        "n_countries": 7,
+        "r_loading": 0.286169361166861,
+        "p_loading": 0.5338294544743126,
+        "r_regression": 0.9082828313842041,
+        "p_regression": 0.00465479970596978
+      },
+      {
+        "excluded_country": "Switzerland",
+        "n_countries": 7,
+        "r_loading": 0.25770835037812806,
+        "p_loading": 0.5768827711866211,
+        "r_regression": 0.9141564468585265,
+        "p_regression": 0.003957790361233013
+      },
+      {
+        "excluded_country": "Poland",
+        "n_countries": 7,
+        "r_loading": 0.1535473319326739,
+        "p_loading": 0.74239193589801,
+        "r_regression": 0.8596552332061306,
+        "p_regression": 0.013121563844786457
+      },
+      {
+        "excluded_country": "Netherlands",
+        "n_countries": 7,
+        "r_loading": 0.5259035593562822,
+        "p_loading": 0.22535544176840178,
+        "r_regression": 0.9027985287524007,
+        "p_regression": 0.00536584469685149
+      },
+      {
+        "excluded_country": "Sweden",
+        "n_countries": 7,
+        "r_loading": 0.20503313562944098,
+        "p_loading": 0.6591948613917014,
+        "r_regression": 0.8426808272638494,
+        "p_regression": 0.017289768958927903
+      },
+      {
+        "excluded_country": "Australia",
+        "n_countries": 7,
+        "r_loading": 0.27178780118071344,
+        "p_loading": 0.5554497118994884,
+        "r_regression": 0.8746357946586134,
+        "p_regression": 0.009978824890896097
+      },
+      {
+        "excluded_country": "Argentina",
+        "n_countries": 7,
+        "r_loading": 0.29856887044470337,
+        "p_loading": 0.5154202464678562,
+        "r_regression": 0.8975949820896875,
+        "p_regression": 0.006095450914500049
+      },
+      {
+        "excluded_country": "None (all countries)",
+        "n_countries": 8,
+        "r_loading": 0.2648099137845665,
+        "p_loading": 0.5262051030844949,
+        "r_regression": 0.8955356463281373,
+        "p_regression": 0.002631369718617448
+      }
+    ],
+    "loo_ranges": {
+      "r_loading": [
+        0.1535473319326739,
+        0.5259035593562822
+      ],
+      "p_loading": [
+        0.22535544176840178,
+        0.74239193589801
+      ],
+      "r_regression": [
+        0.8426808272638494,
+        0.9541916535329549
+      ],
+      "p_regression": [
+        0.0008415376882661949,
+        0.017289768958927903
+      ]
+    },
+    "figures": {
+      "pca": "/home/ubuntu/repos/wip/icr_paper/figures/fig_pca_ist_analysis.png",
+      "loo": "/home/ubuntu/repos/wip/icr_paper/figures/fig_loo_sensitivity.png"
+    },
+    "size_adjusted": {
+      "r_log_n_vs_mortality": 0.4893257520103468,
+      "p_log_n_vs_mortality": 0.2184490812597238,
+      "r_log_n_vs_loading": -0.10220671495740195,
+      "p_log_n_vs_loading": 0.8096928183671578,
+      "partial_r_loading": 0.3628932953337893,
+      "partial_p_loading": 0.42368421032684844,
+      "partial_df_loading": 5,
+      "r_log_n_vs_regression": 0.2336092933169614,
+      "p_log_n_vs_regression": 0.5776577084853126,
+      "partial_r_regression": 0.921287444361645,
+      "partial_p_regression": 0.0031988991755313727,
+      "partial_df_regression": 5
+    },
+    "correlation_full": {
+      "r_loading": 0.2648099137845665,
+      "p_loading": 0.5262051030844949,
+      "r_regression": 0.8955356463281373,
+      "p_regression": 0.002631369718617448
+    }
+  },
+  "early_convergence": {
+    "settings": {
+      "n_studies_total": 15,
+      "true_delta": 0.2,
+      "n_per_arm": 80,
+      "dimensions": [
+        5,
+        10,
+        15,
+        20,
+        30,
+        40,
+        60
+      ],
+      "i_squared_threshold": 25.0
+    },
+    "n_iterations": 500,
+    "strategies": {
+      "random": {
+        "mean_conclusive": 3.942,
+        "median_conclusive": 3.0,
+        "pct_conclusive_by_5": 81.39999999999999,
+        "pct_conclusive_by_10": 97.2,
+        "mean_stable": 3.19,
+        "median_stable": 2.0
+      },
+      "matched": {
+        "mean_conclusive": 3.912,
+        "median_conclusive": 3.0,
+        "pct_conclusive_by_5": 78.0,
+        "pct_conclusive_by_10": 97.6,
+        "mean_stable": 3.204,
+        "median_stable": 2.0
+      },
+      "linko": {
+        "mean_conclusive": 3.998,
+        "median_conclusive": 3.0,
+        "pct_conclusive_by_5": 77.60000000000001,
+        "pct_conclusive_by_10": 97.6,
+        "mean_stable": 3.144,
+        "median_stable": 2.0
+      }
+    }
+  },
+  "figures": {
+    "core": [
+      "/home/ubuntu/repos/wip/icr_paper/figures/fig0_icr_dimension_relationship.png",
+      "/home/ubuntu/repos/wip/icr_paper/figures/fig1_scenario_comparison.png",
+      "/home/ubuntu/repos/wip/icr_paper/figures/fig2_sequential_analysis.png",
+      "/home/ubuntu/repos/wip/icr_paper/figures/fig_realworld_statin.png",
+      "/home/ubuntu/repos/wip/icr_paper/figures/fig_realworld_glucose_control.png"
+    ],
+    "linko": {
+      "statin_prism": "/home/ubuntu/repos/wip/icr_paper/figures/fig_linko_prism_statin.png",
+      "glucose_control_prism": "/home/ubuntu/repos/wip/icr_paper/figures/fig_linko_prism_glucose_control.png",
+      "ist_prism": "/home/ubuntu/repos/wip/icr_paper/figures/fig_linko_prism_ist.png"
+    },
+    "early_convergence": "/home/ubuntu/repos/wip/icr_paper/figures/fig_linko_early_convergence.png",
+    "ist": {
+      "pca": "/home/ubuntu/repos/wip/icr_paper/figures/fig_pca_ist_analysis.png",
+      "loo": "/home/ubuntu/repos/wip/icr_paper/figures/fig_loo_sensitivity.png"
+    }
+  }
+}

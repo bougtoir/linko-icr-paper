@@ -11,11 +11,8 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 from matplotlib.colors import Normalize
 from matplotlib.cm import ScalarMappable
-from scipy import stats
-from typing import Optional
 import os
 import sys
 
@@ -179,7 +176,7 @@ def prism_forest_plot(
         )
 
     plt.tight_layout()
-    plt.savefig(output_path, dpi=200, bbox_inches="tight")
+    plt.savefig(output_path, dpi=600, bbox_inches="tight")
     plt.close()
     return output_path
 
@@ -366,7 +363,7 @@ def early_convergence_simulation(
         color=[colors[s] for s in strategies], alpha=0.8,
         edgecolor="black", linewidth=0.5
     )
-    bars2 = axes[2].bar(
+    axes[2].bar(
         x + width / 2, mean_stable, width,
         label="Mean studies to I$^2$ < 25%",
         color=[colors[s] for s in strategies], alpha=0.4,
@@ -387,97 +384,96 @@ def early_convergence_simulation(
         )
 
     plt.tight_layout()
-    plt.savefig(output_path, dpi=200, bbox_inches="tight")
+    plt.savefig(output_path, dpi=600, bbox_inches="tight")
     plt.close()
 
     return {"summary": summary, "figure_path": output_path}
 
 
-def generate_all_linko_figures(output_dir="icr_paper/figures"):
-    """Generate all LINKO visualization figures."""
+def generate_all_linko_figures(
+    rw_results,
+    ist_results,
+    output_dir=None,
+    n_convergence_iterations=500,
+):
+    """Generate every LINKO figure from computed results (no literal values).
+
+    Parameters
+    ----------
+    rw_results : dict
+        Output of :func:`icr_paper.src.real_world_analysis.run_real_world_analyses`.
+    ist_results : dict
+        Output of :func:`icr_paper.src.ist_pca_analysis.run_ist_pca_analysis`.
+    output_dir : str, optional
+        Figure directory (defaults to ``icr_paper/figures``).
+    n_convergence_iterations : int
+        Monte Carlo iterations for the early-convergence simulation.
+    """
+    if output_dir is None:
+        output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "figures")
     os.makedirs(output_dir, exist_ok=True)
     results = {}
 
-    # --- 1. Statin Prism Forest Plot ---
-    statin_effects = np.array([-0.370, -0.250, -0.100, -0.250, -0.110])
-    statin_se = np.array([0.08, 0.07, 0.06, 0.05, 0.05])
-    statin_icr_std = np.array([0.100, 0.100, 0.091, 0.100, 0.100])
-    statin_labels = ["4S (1994)", "WOSCOPS (1995)", "CARE (1996)",
-                     "LIPID (1998)", "AFCAPS (1998)"]
+    domain_titles = {
+        "statin": "Statin Therapy",
+        "glucose_control": "Intensive Glucose Control",
+    }
 
-    p1 = prism_forest_plot(
-        effects=statin_effects, se=statin_se,
-        icr_values=statin_icr_std, study_labels=statin_labels,
-        icr_label="ICR$_{std}$", pooled_effect=-0.251, pooled_se=0.057,
-        title="LINKO Prism Forest Plot: Statin Therapy\n(Low ICRD = 0.009, I$^2$ = 0%)",
-        output_path=os.path.join(output_dir, "fig_linko_prism_statin.png"),
-    )
-    results["statin_prism"] = p1
-    print(f"  Statin Prism Forest Plot: {p1}")
+    for tag, result in rw_results.items():
+        df = result["study_results"]
+        meta = result["meta_analysis"]
+        icrd = result["icr_statistics"]["icrd"]
+        title = (
+            f"LINKO Prism Forest Plot: {domain_titles.get(tag, tag)}\n"
+            f"(ICRD = {icrd:.3f}, I$^2$ = {meta['i_squared']:.1f}%)"
+        )
+        path = prism_forest_plot(
+            effects=df["effect_size"].to_numpy(),
+            se=np.sqrt(df["effect_var"].to_numpy()),
+            icr_values=df["icr_std"].to_numpy(),
+            study_labels=list(df["study"]),
+            icr_label="ICR$_{std}$",
+            pooled_effect=meta["pooled_effect"],
+            pooled_se=meta["pooled_se"],
+            title=title,
+            output_path=os.path.join(output_dir, f"fig_linko_prism_{tag}.png"),
+        )
+        results[f"{tag}_prism"] = path
 
-    # --- 2. Glucose Control Prism Forest Plot ---
-    glucose_effects = np.array([-0.060, +0.220, -0.070, -0.020])
-    glucose_se = np.array([0.05, 0.06, 0.04, 0.10])
-    glucose_icr_std = np.array([0.125, 0.077, 0.083, 0.083])
-    glucose_labels = ["UKPDS 33 (1998)", "ACCORD (2008)",
-                      "ADVANCE (2008)", "VADT (2009)"]
-
-    p2 = prism_forest_plot(
-        effects=glucose_effects, se=glucose_se,
-        icr_values=glucose_icr_std, study_labels=glucose_labels,
-        icr_label="ICR$_{std}$", pooled_effect=-0.003, pooled_se=0.065,
-        title="LINKO Prism Forest Plot: Intensive Glucose Control\n(High ICRD = 0.048, I$^2$ = 17%)",
-        output_path=os.path.join(output_dir, "fig_linko_prism_glucose.png"),
-    )
-    results["glucose_prism"] = p2
-    print(f"  Glucose Prism Forest Plot: {p2}")
-
-    # --- 3. IST Prism Forest Plot (color=ICR_pca, size=ICR_pca_reg) ---
-    ist_mortality = np.array([0.286, 0.200, 0.231, 0.296, 0.183, 0.127, 0.150, 0.218])
-    # Use mortality as "effect" (event rate), SE from binomial
-    ist_n = np.array([5787, 3112, 1631, 759, 728, 636, 568, 545])
-    ist_se = np.sqrt(ist_mortality * (1 - ist_mortality) / ist_n)
-    ist_icr_pca_loading = np.array([0.138, 0.046, 0.121, 0.139, 0.180, 0.096, 0.109, 0.079])
-    ist_icr_pca_reg = np.array([0.00162, 0.00153, 0.00135, 0.00230, 0.00136, 0.00073, 0.00096, 0.00157])
-    ist_labels = ["UK (n=5787)", "Italy (n=3112)", "Switzerland (n=1631)",
-                  "Poland (n=759)", "Netherlands (n=728)", "Sweden (n=636)",
-                  "Australia (n=568)", "Argentina (n=545)"]
-
-    p3 = prism_forest_plot(
-        effects=ist_mortality, se=ist_se,
-        icr_values=ist_icr_pca_loading, study_labels=ist_labels,
+    ist_df = ist_results["country_results"]
+    mortality = ist_df["mortality_rate"].to_numpy()
+    n = ist_df["n"].to_numpy()
+    ist_se = np.sqrt(mortality * (1 - mortality) / n)
+    pooled_rate = float(np.average(mortality, weights=n))
+    pooled_se = float(np.sqrt(pooled_rate * (1 - pooled_rate) / n.sum()))
+    results["ist_prism"] = prism_forest_plot(
+        effects=mortality,
+        se=ist_se,
+        icr_values=ist_df["icr_pca_loading"].to_numpy(),
+        study_labels=[f"{c} (n={int(k)})" for c, k in zip(ist_df["country"], n)],
         icr_label="ICR$_{pca}$ (loading)",
-        pooled_effect=np.average(ist_mortality, weights=ist_n),
-        pooled_se=0.003,
-        title="LINKO Prism Forest Plot: IST Country Sub-Studies\n"
-              "(color = ICR$_{pca}$ loading, size = ICR$_{pca}$ regression)",
+        pooled_effect=pooled_rate,
+        pooled_se=pooled_se,
+        title=(
+            "LINKO Prism Forest Plot: IST Country Sub-Studies\n"
+            "(color = ICR$_{pca}$ loading, size = ICR$_{pca}$ regression)"
+        ),
         output_path=os.path.join(output_dir, "fig_linko_prism_ist.png"),
-        icr_secondary=ist_icr_pca_reg,
+        icr_secondary=ist_df["icr_pca_reg"].to_numpy(),
         icr_secondary_label="ICR$_{pca,reg}$",
     )
-    results["ist_prism"] = p3
-    print(f"  IST Prism Forest Plot: {p3}")
 
-    # --- 4. Early Convergence Analysis ---
-    print("  Running early convergence simulation (500 iterations)...")
     conv_result = early_convergence_simulation(
-        n_iterations=500,
+        n_iterations=n_convergence_iterations,
         output_path=os.path.join(output_dir, "fig_linko_early_convergence.png"),
     )
     results["early_convergence"] = conv_result
-    print(f"  Early Convergence figure: {conv_result['figure_path']}")
 
     return results
 
 
 if __name__ == "__main__":
-    print("=== Generating LINKO Figures ===")
-    results = generate_all_linko_figures()
-    print("\n=== Summary ===")
-    if "early_convergence" in results:
-        ec = results["early_convergence"]["summary"]
-        for strategy, s in ec.items():
-            print(f"\n  {strategy}:")
-            for k, v in s.items():
-                print(f"    {k}: {v:.2f}")
-    print("\nDone.")
+    raise SystemExit(
+        "Run icr_paper/run_analysis.py; LINKO figures are generated from the "
+        "analysis results rather than standalone."
+    )

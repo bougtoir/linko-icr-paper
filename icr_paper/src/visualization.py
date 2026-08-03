@@ -8,7 +8,6 @@ real-world analysis, and method comparison.
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 from pathlib import Path
 from typing import Optional
 
@@ -25,7 +24,7 @@ plt.rcParams.update({
     "ytick.labelsize": 10,
     "legend.fontsize": 10,
     "figure.dpi": 150,
-    "savefig.dpi": 300,
+    "savefig.dpi": 600,
     "savefig.bbox": "tight",
 })
 
