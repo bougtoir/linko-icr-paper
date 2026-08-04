@@ -9,7 +9,7 @@ We submit our manuscript, "LINKO (Latent Information Normalization for Key Outco
 
 ### What the paper does
 
-Meta-analysis reduces each trial to one effect estimate for one endpoint, while trials differ substantially in how many variables they measure and in how the endpoint sits within that variable space. We formalise this structural feature within the LINKO (Latent Information Normalization for Key Outcomes) framework, whose core descriptor is the Information Contribution Ratio (ICR), give an explicit estimand, and provide estimators computable from published baseline tables and from individual participant data. We then test, rather than assume, the natural hypothesis that dispersion in ICR is associated with statistical heterogeneity.
+Meta-analysis reduces each trial to one effect estimate for one endpoint, while trials differ substantially in how many variables they measure and in how the endpoint sits within that variable space. We formalise this structural feature within the Latent Information Normalization for Key Outcomes (LINKO) framework, whose core descriptor is the Information Contribution Ratio (ICR), give an explicit estimand, and provide estimators computable from published baseline tables and from individual participant data. We then test, rather than assume, the natural hypothesis that dispersion in ICR is associated with statistical heterogeneity.
 
 ### Why we think it suits the journal
 
