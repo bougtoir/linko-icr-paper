@@ -33,10 +33,10 @@ def build(res: dict) -> str:
     lines = [
         "[Date]",
         "",
-        "The Editor-in-Chief",
+        "The Editors-in-Chief",
         "*Statistics in Medicine*",
         "",
-        "Dear Editor-in-Chief,",
+        "Dear Editors-in-Chief,",
         "",
         f"We submit our manuscript, \"{TITLE}\", for consideration as a Research Article "
         "in *Statistics in Medicine*.",

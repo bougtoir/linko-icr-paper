@@ -1,9 +1,9 @@
 [Date]
 
-The Editor-in-Chief
+The Editors-in-Chief
 *Statistics in Medicine*
 
-Dear Editor-in-Chief,
+Dear Editors-in-Chief,
 
 We submit our manuscript, "LINKO (Latent Information Normalization for Key Outcomes): A Framework for Evaluating the Validity of Meta-Analytic Pooling Across Heterogeneous RCT Data Structures", for consideration as a Research Article in *Statistics in Medicine*.
 
