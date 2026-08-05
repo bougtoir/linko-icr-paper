@@ -28,6 +28,7 @@ from icr_paper.src.manuscript_content import (
     figure_blocks,
     renumber_citations,
 )
+from icr_paper.src.omml_equations import build_omml
 from icr_paper.src.results_loader import load_results
 
 CITATION_RE = re.compile(r"\[(\d+(?:,\d+)*)\]")
@@ -124,7 +125,11 @@ def render_docx(blocks: list, output: Path, font: str, embed_figures: bool) -> P
         elif kind == "eq":
             paragraph = doc.add_paragraph()
             paragraph.paragraph_format.left_indent = Inches(0.5)
-            _add_text(paragraph, payload, font, italic=True)
+            omml, trailing = build_omml(payload)
+            paragraph._element.append(omml)
+            if trailing:
+                run = paragraph.add_run(trailing)
+                run.font.name = font
         elif kind == "table":
             _render_table(doc, payload, font)
         elif kind == "figure":
