@@ -234,7 +234,7 @@ def main() -> None:
         english, BASE / "LINKO_manuscript_english.docx", EN_FONT, embed_figures=True
     )
     out_ja = render_docx(
-        japanese, BASE / "LINKO_manuscript_japanese.docx", JA_FONT, embed_figures=True
+        japanese, BASE / "LINKO_manuscript_japanese.docx", JA_FONT, embed_figures=False
     )
     # Reading copy with figures and tables placed after the paragraphs that cite them.
     out_review = render_docx(
