@@ -1,4 +1,5 @@
-"""Manuscript content for the LINKO paper (Statistics in Medicine format).
+"""Manuscript content for the LINKO paper (Health Services and Outcomes
+Research Methodology format).
 
 The text is written here once as a language-neutral block list; every numeric
 value is interpolated from ``results/results.json`` and the CSV tables in
@@ -15,6 +16,7 @@ Block grammar
 ``("pagebreak", None)``
 """
 
+import re
 from pathlib import Path
 
 from .results_loader import (
@@ -70,9 +72,197 @@ R = {name: i + 1 for i, name in enumerate(
     ]
 )}
 
+# ----------------------------------------------------------------------
+# Author-year reference style (Health Services and Outcomes Research
+# Methodology / Springer).
+# ----------------------------------------------------------------------
+AUTHOR_OVERRIDES = {
+    "s4": "4S Study Group",
+    "lipid": "LIPID Study Group",
+    "ukpds": "UKPDS Study Group",
+    "accord": "ACCORD Study Group",
+    "advance": "ADVANCE Collaborative Group",
+    "ist1997": "International Stroke Trial Collaborative Group",
+}
 
-def _cite(*keys) -> str:
-    return "[" + ",".join(str(R[k]) for k in keys) + "]"
+_YEAR_RE = re.compile(r"(?<!\d)(19|20)\d{2}(?=[;\s.]|$)")
+
+
+def _initials_str(token: str) -> str:
+    return " ".join(c + "." for c in token)
+
+
+def _parse_authors(authors_str: str, key: str) -> tuple[list[tuple[str, str]], bool]:
+    parts = [p.strip() for p in authors_str.split(",")]
+    et_al = False
+    if parts and parts[-1].lower().startswith("et al"):
+        et_al = True
+        parts = parts[:-1]
+    authors: list[tuple[str, str]] = []
+    for part in parts:
+        tokens = part.split()
+        initials: list[str] = []
+        surname_tokens: list[str] = []
+        for tok in tokens:
+            if re.fullmatch(r"[A-Z]+", tok):
+                initials.append(tok)
+            else:
+                surname_tokens.append(tok)
+        surname = " ".join(surname_tokens)
+        init_str = " ".join(_initials_str(tok) for tok in initials) if initials else ""
+        authors.append((surname, init_str))
+    if key in AUTHOR_OVERRIDES:
+        authors = [(AUTHOR_OVERRIDES[key], "")] + authors[1:]
+    return authors, et_al
+
+
+def _parse_reference(text: str, key: str) -> dict:
+    m = re.match(r"([^\.]+)\.\s+(.*)$", text)
+    if not m:
+        return {
+            "raw": text,
+            "key": key,
+            "authors": [],
+            "et_al": False,
+            "year": "",
+            "title": "",
+            "journal": "",
+            "volume": "",
+            "pages": "",
+            "publisher": "",
+            "location": "",
+            "version": "",
+        }
+    authors_str, rest = m.group(1), m.group(2)
+    authors, et_al = _parse_authors(authors_str, key)
+    italic_parts = re.findall(r"\*([^*]+)\*", rest)
+    if rest.strip().startswith("*"):
+        title = italic_parts[0] if italic_parts else ""
+        extra = re.sub(r"\*[^*]+\*\s*\.?\s*", "", rest, count=1).strip()
+        journal = ""
+    else:
+        parts = rest.split("*", 2)
+        title = parts[0].strip(" .") if parts else ""
+        journal = italic_parts[0] if italic_parts else ""
+        extra = parts[2].strip(" .*") if len(parts) > 2 else ""
+    volume = ""
+    pages = ""
+    publisher = ""
+    location = ""
+    version = ""
+    ym = _YEAR_RE.search(extra)
+    year = ym.group(0) if ym else ""
+    if ym:
+        before = extra[: ym.start()].strip()
+        after = extra[ym.end() :].lstrip(" .")
+        mvp = re.match(r";\s*([^:\n]+):\s*([^\s.]+)", after)
+        if mvp:
+            volume = mvp.group(1).strip()
+            pages = mvp.group(2).rstrip(".").strip().replace("-", "\u2013")
+        else:
+            colon = before.rfind(":")
+            if colon > 0:
+                publisher = before[colon + 1 :].strip().rstrip(";")
+                prefix = before[:colon].strip()
+                if ". " in prefix:
+                    version, location = prefix.rsplit(". ", 1)
+                    version = version + "." if version else ""
+                else:
+                    location = prefix
+                    version = ""
+            else:
+                version = before
+    return {
+        "raw": text,
+        "key": key,
+        "authors": authors,
+        "et_al": et_al,
+        "year": year,
+        "title": title,
+        "journal": journal,
+        "volume": volume,
+        "pages": pages,
+        "publisher": publisher,
+        "location": location,
+        "version": version,
+    }
+
+
+def _format_authors(authors: list[tuple[str, str]]) -> str:
+    parts = []
+    for surname, initials in authors:
+        if initials:
+            parts.append(f"{surname}, {initials}")
+        else:
+            parts.append(surname)
+    return ", ".join(parts)
+
+
+def _format_reference(ref: dict) -> str:
+    authors = _format_authors(ref["authors"])
+    title = ref["title"]
+    if title and not title.endswith((".", "?", "!")):
+        title += "."
+    if ref["journal"]:
+        if ref["volume"] and ref["pages"]:
+            return f"{authors}: {title} {ref['journal']} {ref['volume']}, {ref['pages']} ({ref['year']})."
+        elif ref["volume"]:
+            return f"{authors}: {title} {ref['journal']} {ref['volume']} ({ref['year']})."
+        return f"{authors}: {title} {ref['journal']} ({ref['year']})."
+    extra = ref["version"].rstrip(".")
+    if ref["publisher"]:
+        if extra:
+            extra = f"{extra}. {ref['publisher']}, {ref['location']}"
+        else:
+            extra = f"{ref['publisher']}, {ref['location']}"
+    return f"{authors}: {title} {extra} ({ref['year']})."
+
+
+def _cite_label(ref: dict) -> str:
+    if not ref["authors"]:
+        return ""
+    label = ref["authors"][0][0]
+    n = len(ref["authors"])
+    if n == 1:
+        return label
+    if n == 2 and not ref["et_al"]:
+        return f"{label} and {ref['authors'][1][0]}"
+    return f"{label} et al."
+
+
+def _cite_author_year(*keys: str) -> str:
+    entries = []
+    for key in keys:
+        idx = R[key] - 1
+        text = REFERENCES[idx]
+        ref = _parse_reference(text, key)
+        label = _cite_label(ref)
+        year = ref["year"]
+        entries.append((label.lower(), label, year))
+    entries.sort(key=lambda x: (x[0], x[2]))
+    groups: list[tuple[str, list[str]]] = []
+    for _, label, year in entries:
+        if groups and groups[-1][0] == label:
+            groups[-1][1].append(year)
+        else:
+            groups.append((label, [year]))
+    parts = [f"{label} {', '.join(years)}" for label, years in groups]
+    return "(" + "; ".join(parts) + ")"
+
+
+def format_references() -> list[str]:
+    """Return the reference list formatted and sorted alphabetically."""
+    formatted = []
+    for key, idx in R.items():
+        ref = _parse_reference(REFERENCES[idx - 1], key)
+        sort_key = (ref["authors"][0][0].lower(), ref["year"], key)
+        formatted.append((sort_key, _format_reference(ref)))
+    formatted.sort(key=lambda x: x[0])
+    return [ref for _, ref in formatted]
+
+
+def _cite(*keys: str) -> str:
+    return _cite_author_year(*keys)
 
 
 def _fig(label: str, filename: str, caption: str) -> tuple:
@@ -216,7 +406,9 @@ TITLE = (
 )
 SHORT_TITLE = "LINKO"
 AUTHORS = "Tatsuki Onishi"
-AFFILIATION = "[Affiliation]"
+AFFILIATION = (
+    "Data Science and AI Innovation Research Promotion Center, Shiga University"
+)
 CORRESPONDING = "Tatsuki Onishi, [Address], [Email]"
 KEYWORDS = [
     "meta-analysis",
@@ -874,14 +1066,15 @@ def build_english(res: dict) -> list:
         )
     )
 
-    # ---------------- Back matter
-    add(("h1", "Acknowledgements"))
+    # ---------------- Statements and Declarations
+    add(("h1", "Statements and Declarations"))
+    add(("h2", "Acknowledgements"))
     add(("p", "[To be completed]"))
-    add(("h1", "Conflict of interest"))
-    add(("p", "The author declares no conflict of interest."))
-    add(("h1", "Funding"))
-    add(("p", "[To be completed]"))
-    add(("h1", "Data availability statement"))
+    add(("h2", "Competing interests"))
+    add(("p", "The author declares no competing interests."))
+    add(("h2", "Funding"))
+    add(("p", "No funding was received for this study."))
+    add(("h2", "Data availability"))
     add(
         (
             "p",
@@ -896,7 +1089,7 @@ def build_english(res: dict) -> list:
             f"versions and the commit used (commit {meta['git_commit'][:12]}).",
         )
     )
-    add(("h1", "Ethics"))
+    add(("h2", "Ethics approval and consent to participate"))
     add(
         (
             "p",
@@ -1194,44 +1387,81 @@ def build_japanese(res: dict) -> list:
     return blocks
 
 
-def renumber_citations(blocks: list) -> list:
-    """Renumber citations in order of first appearance (Vancouver style).
-
-    Returns the reordered reference list and rewrites the citation markers in
-    place so that the numbering in the text always matches the reference list.
+def _extract_tables(blocks: list) -> tuple[list, dict]:
+    """Remove table blocks (and their immediately preceding pagebreaks) from
+    ``blocks`` and return the cleaned blocks together with the tables.
     """
-    import re
+    cleaned: list = []
+    tables: dict[str, tuple] = {}
+    pending_pagebreak = None
+    for block in blocks:
+        kind, payload = block
+        if kind == "pagebreak":
+            pending_pagebreak = block
+            continue
+        if kind == "table":
+            tables[payload["label"]] = block
+            pending_pagebreak = None
+            continue
+        if pending_pagebreak is not None:
+            cleaned.append(pending_pagebreak)
+            pending_pagebreak = None
+        cleaned.append(block)
+    if pending_pagebreak is not None:
+        cleaned.append(pending_pagebreak)
+    return cleaned, tables
 
-    pattern = re.compile(r"\[(\d+(?:,\d+)*)\]")
-    mapping: dict[int, int] = {}
 
-    def replace(match):
-        numbers = [int(n) for n in match.group(1).split(",")]
-        renumbered = []
-        for n in numbers:
-            if n not in mapping:
-                mapping[n] = len(mapping) + 1
-            renumbered.append(mapping[n])
-        return "[" + ",".join(str(n) for n in sorted(renumbered)) + "]"
+def _insert_tables_inline(blocks: list) -> None:
+    """Move each table block to immediately after the paragraph that first
+    cites it, preserving the original table order when multiple tables share
+    the same first-citation paragraph.
+    """
+    cleaned, tables = _extract_tables(blocks)
+    first_mention: dict[str, int] = {}
+    for i, (kind, payload) in enumerate(cleaned):
+        if kind != "p":
+            continue
+        for label in tables:
+            if label in first_mention:
+                continue
+            if label in payload:
+                first_mention[label] = i
+    missing = [label for label in tables if label not in first_mention]
+    if missing:
+        raise SystemExit(f"Tables not cited in text: {missing}")
+    new_blocks: list = []
+    for i, block in enumerate(cleaned):
+        new_blocks.append(block)
+        if block[0] == "p":
+            for label, tbl in tables.items():
+                if first_mention.get(label) == i:
+                    new_blocks.append(tbl)
+    blocks[:] = new_blocks
 
-    for index, (kind, payload) in enumerate(blocks):
-        if kind in ("p", "eq"):
-            blocks[index] = (kind, pattern.sub(replace, payload))
 
-    ordered = [None] * len(mapping)
-    for original, new in mapping.items():
-        ordered[new - 1] = REFERENCES[original - 1]
+def prepare_manuscript(blocks: list) -> list:
+    """Prepare the manuscript for rendering.
 
-    unused = [r for i, r in enumerate(REFERENCES, start=1) if i not in mapping]
-    if unused:
-        raise SystemExit(
-            "Reference list contains entries that are never cited: "
-            + "; ".join(u[:60] for u in unused)
-        )
-
+    * Replaces the raw reference list with an author-year formatted,
+      alphabetically sorted list.
+    * Moves each table block to immediately after the paragraph that first
+      cites it.
+    * Checks that no bracket-style (Vancouver) citation markers remain.
+    """
+    formatted = format_references()
     for index, (kind, payload) in enumerate(blocks):
         if kind == "references":
-            blocks[index] = ("references", ordered)
+            blocks[index] = ("references", formatted)
+
+    _insert_tables_inline(blocks)
+
+    bracket_pattern = re.compile(r"\[(\d+(?:,\d+)*)\]")
+    for kind, payload in blocks:
+        if kind in ("p", "eq") and bracket_pattern.search(payload):
+            raise SystemExit(
+                "Vancouver-style citation marker left in the manuscript: " + payload[:80]
+            )
     return blocks
 
 

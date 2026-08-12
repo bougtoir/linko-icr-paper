@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Generate the Statistics in Medicine cover letter from the analysis results.
+"""Generate the Health Services and Outcomes Research Methodology cover
+letter from the analysis results.
 
 Every figure quoted in the letter is read from ``results/results.json`` so the
 letter cannot disagree with the manuscript.
@@ -34,12 +35,12 @@ def build(res: dict) -> str:
         "[Date]",
         "",
         "The Editors-in-Chief",
-        "*Statistics in Medicine*",
+        "*Health Services and Outcomes Research Methodology*",
         "",
         "Dear Editors-in-Chief,",
         "",
-        f"We submit our manuscript, \"{TITLE}\", for consideration as a Research Article "
-        "in *Statistics in Medicine*.",
+        f"We submit our manuscript, \"{TITLE}\", for consideration as an original "
+        "research/methods paper in *Health Services and Outcomes Research Methodology*.",
         "",
         "### What the paper does",
         "",
@@ -54,14 +55,18 @@ def build(res: dict) -> str:
         "",
         "### Why we think it suits the journal",
         "",
-        "The contribution is methodological and largely negative, which we believe is of "
-        "value to the meta-analysis literature. In a simulation study reported according to "
-        "the ADEMP structure and with Monte Carlo standard errors throughout, the "
-        "heterogeneous-ICR scenario did not show higher I-squared than the uniform-ICR "
-        f"scenario (difference {num(diff['mean_difference'], 2)} percentage points, 95% "
-        f"Monte Carlo confidence interval "
-        f"{ci(diff['ci_lower'], diff['ci_upper'], 2)}), and a negative control in which ICR "
-        "varied with no structural mechanism produced comparable heterogeneity "
+        "The contribution is methodological and directly relevant to health services and "
+        "outcomes research: meta-analyses of randomised trials are widely used to inform "
+        "health policy and clinical practice, yet they routinely pool heterogeneous "
+        "randomised controlled trials without a reproducible way to describe the structural "
+        "differences in their data. The paper is largely negative, which we believe is of "
+        "value to the meta-analysis and evidence-synthesis literature. In a simulation study "
+        "reported according to the ADEMP structure and with Monte Carlo standard errors "
+        "throughout, the heterogeneous-ICR scenario did not show higher I-squared than the "
+        "uniform-ICR scenario (difference "
+        f"{num(diff['mean_difference'], 2)} percentage points, 95% Monte Carlo confidence "
+        f"interval {ci(diff['ci_lower'], diff['ci_upper'], 2)}), and a negative control in "
+        "which ICR varied with no structural mechanism produced comparable heterogeneity "
         f"(mean I-squared {num(negative['i_squared']['mean'], 1)}%). A redundancy analysis "
         "shows that the dimension-counting estimator changes to "
         f"{num(red['icr_std_ratio_max_to_base'], 2)} times its value when near-duplicate "
@@ -94,10 +99,11 @@ def build(res: dict) -> str:
         "",
         "The manuscript is original, has not been published elsewhere and is not under "
         "consideration by another journal. The author declares no competing interests. No "
-        "ethical approval was required: the analyses use publicly available de-identified "
-        "data and simulated data. The abstract is within the 250-word limit, references "
-        "follow the journal style in order of first appearance, tables follow the reference "
-        "list, and the figures are supplied as separate files.",
+        "funding was received for this study. No ethical approval was required: the analyses "
+        "use publicly available de-identified data and simulated data. The abstract is "
+        "within the 250-word limit, references follow the journal's author-year style, "
+        "tables are embedded in the manuscript, and figures are embedded in the manuscript "
+        "and also supplied as separate high-resolution files.",
         "",
         "Thank you for considering our submission.",
         "",
@@ -137,10 +143,10 @@ def write_docx(text: str, output: Path, font: str = "Times New Roman") -> Path:
 
 def main() -> None:
     text = build(load_results())
-    md = BASE / "cover_letter_statistics_in_medicine.md"
+    md = BASE / "cover_letter_health_services_outcomes_research_methodology.md"
     md.write_text(text)
     print(f"Wrote {md}")
-    docx = BASE / "cover_letter_statistics_in_medicine.docx"
+    docx = BASE / "cover_letter_health_services_outcomes_research_methodology.docx"
     write_docx(text, docx)
     print(f"Wrote {docx}")
 

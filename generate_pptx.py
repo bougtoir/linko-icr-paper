@@ -22,7 +22,7 @@ sys.path.insert(0, str(BASE.parent))
 from icr_paper.src.manuscript_content import (
     build_english,
     figure_blocks,
-    renumber_citations,
+    prepare_manuscript,
 )
 from icr_paper.src.results_loader import load_results
 
@@ -86,7 +86,7 @@ def add_figure_slide(prs: Presentation, spec: dict) -> None:
 
 def main() -> None:
     results = load_results()
-    blocks = renumber_citations(build_english(results))
+    blocks = prepare_manuscript(build_english(results))
     specs = figure_blocks(blocks)
 
     prs = Presentation()

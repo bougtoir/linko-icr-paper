@@ -26,7 +26,7 @@ from icr_paper.src.manuscript_content import (
     build_english,
     build_japanese,
     figure_blocks,
-    renumber_citations,
+    prepare_manuscript,
 )
 from icr_paper.src.omml_equations import build_omml
 from icr_paper.src.results_loader import load_results
@@ -46,7 +46,7 @@ def _new_document(font: str) -> Document:
 
 
 def _add_text(paragraph, text: str, font: str, italic: bool = False) -> None:
-    """Add text, rendering ``[1,2]`` citations as superscript numerals."""
+    """Add text to a paragraph."""
     position = 0
     for match in CITATION_RE.finditer(text):
         before = text[position : match.start()]
@@ -137,10 +137,10 @@ def render_docx(blocks: list, output: Path, font: str, embed_figures: bool) -> P
             if embed_figures:
                 _render_figure(doc, payload, font)
         elif kind == "references":
-            for index, reference in enumerate(payload, start=1):
+            for reference in payload:
                 paragraph = doc.add_paragraph()
                 paragraph.paragraph_format.space_after = Pt(2)
-                _add_text(paragraph, f"{index}. " + reference.replace("*", ""), font)
+                _add_text(paragraph, reference, font)
         elif kind == "pagebreak":
             doc.add_page_break()
 
@@ -192,19 +192,19 @@ def render_markdown(blocks: list, output: Path) -> Path:
             lines.append(f"\n![{payload['label']}]({rel})\n")
             lines.append(f"*{payload['label']}. {payload['caption']}*\n")
         elif kind == "references":
-            for index, reference in enumerate(payload, start=1):
-                lines.append(f"{index}. {reference}")
+            for reference in payload:
+                lines.append(f"- {reference}")
             lines.append("")
     output.write_text("\n".join(lines))
     return output
 
 
 def check_abstract_length(blocks: list, limit: int = 250) -> int:
-    """Statistics in Medicine allows at most 250 words in the abstract."""
+    """HSORM allows at most 250 words in the abstract."""
     for index, (kind, payload) in enumerate(blocks):
         if kind == "h1" and payload == "Abstract":
             text = blocks[index + 1][1]
-            words = len(CITATION_RE.sub("", text).split())
+            words = len(text.split())
             if words > limit:
                 raise SystemExit(
                     f"Abstract is {words} words, exceeding the {limit}-word limit."
@@ -221,21 +221,22 @@ def check_abstract_length(blocks: list, limit: int = 250) -> int:
 
 def main() -> None:
     results = load_results()
-    english = renumber_citations(build_english(results))
-    japanese = build_japanese(results)
+    english = prepare_manuscript(build_english(results))
+    japanese = prepare_manuscript(build_japanese(results))
 
     words = check_abstract_length(english)
     print(f"Abstract: {words} words (limit 250)")
 
-    # Statistics in Medicine: tables follow the references, figures are supplied
-    # as separate files and represented in the manuscript by their legends.
+    # HSORM: figures and tables are embedded in the manuscript; separate
+    # high-resolution figure files and an editable tables document are also
+    # supplied.
     out_en = render_docx(
-        english, BASE / "LINKO_manuscript_english.docx", EN_FONT, embed_figures=False
+        english, BASE / "LINKO_manuscript_english.docx", EN_FONT, embed_figures=True
     )
     out_ja = render_docx(
-        japanese, BASE / "LINKO_manuscript_japanese.docx", JA_FONT, embed_figures=False
+        japanese, BASE / "LINKO_manuscript_japanese.docx", JA_FONT, embed_figures=True
     )
-    # Reading copy with the figures placed after the paragraph that cites them.
+    # Reading copy with figures and tables placed after the paragraphs that cite them.
     out_review = render_docx(
         english,
         BASE / "LINKO_manuscript_english_with_figures.docx",

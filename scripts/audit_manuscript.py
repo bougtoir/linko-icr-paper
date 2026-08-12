@@ -22,13 +22,14 @@ sys.path.insert(0, str(BASE.parent))
 
 from icr_paper.src.manuscript_content import (
     build_english,
-    renumber_citations,
+    prepare_manuscript,
 )
 from icr_paper.src.results_loader import load_results
 
 RESULTS_DIR = BASE / "results"
 NUMBER_RE = re.compile(r"-?\d+(?:,\d{3})*(?:\.\d+)?")
-CITATION_RE = re.compile(r"\[(\d+(?:,\d+)*)\]")
+BRACKET_CITATION_RE = re.compile(r"\[(\d+(?:,\d+)*)\]")
+AUTHOR_YEAR_CITATION_RE = re.compile(r"\([^)]*\b(19|20)\d{2}\b[^)]*\)")
 BANNED = [
     "validity of pooling",
     "robust validation",
@@ -92,7 +93,7 @@ def result_number_pool() -> set:
 def audit() -> list:
     problems = []
     results = load_results()
-    blocks = renumber_citations(build_english(results))
+    blocks = prepare_manuscript(build_english(results))
     pool = result_number_pool()
 
     body = []
@@ -118,7 +119,8 @@ def audit() -> list:
             continue
         # Identifiers (URLs, DOIs, handles, commit hashes) are not results.
         stripped = re.sub(r"\S*(?:https?://|doi|/|:)\S*", " ", payload)
-        stripped = CITATION_RE.sub("", stripped)
+        stripped = AUTHOR_YEAR_CITATION_RE.sub("", stripped)
+        stripped = BRACKET_CITATION_RE.sub("", stripped)
         for token in NUMBER_RE.findall(stripped):
             clean = token.lstrip("-")
             if clean in ALLOWED_LITERALS or clean in pool:
@@ -129,19 +131,12 @@ def audit() -> list:
                 f"Untraceable number '{token}' in: {payload[:90]}..."
             )
 
-    # 2. citation order and orphans
-    seen = 0
-    for match in CITATION_RE.finditer(text):
-        for number in (int(n) for n in match.group(1).split(",")):
-            if number > reference_count:
-                problems.append(f"Citation {number} exceeds reference count")
-            if number > seen + 1:
-                problems.append(f"Citation {number} appears before {seen + 1}")
-            seen = max(seen, number)
-    if seen != reference_count:
-        problems.append(
-            f"{reference_count} references but highest citation is {seen}"
-        )
+    # 2. citations: no Vancouver bracket markers should remain, and every
+    #    reference list entry should be present and non-empty.
+    for match in BRACKET_CITATION_RE.finditer(text):
+        problems.append(f"Vancouver-style citation marker left in text: {match.group(0)}")
+    if reference_count == 0:
+        problems.append("Reference list is empty")
 
     # 3. figures and tables cited in order
     for labels in (tables, figures):
@@ -164,7 +159,7 @@ def audit() -> list:
     # 5. abstract length
     for index, (kind, payload) in enumerate(blocks):
         if kind == "h1" and payload == "Abstract":
-            words = len(CITATION_RE.sub("", blocks[index + 1][1]).split())
+            words = len(blocks[index + 1][1].split())
             if words > 250:
                 problems.append(f"Abstract is {words} words (limit 250)")
     return problems
